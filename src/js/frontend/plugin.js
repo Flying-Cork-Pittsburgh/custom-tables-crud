@@ -2,11 +2,11 @@
  * @preserve: Custom JavaScript Logic - Frontend
  */
 
-;var WPBP_NS = WPBP_NS || {};
+;var CTCRUD_NS = CTCRUD_NS || {};
 
 (function($, undefined) {
 
-  WPBP_NS.Site = {
+  CTCRUD_NS.Site = {
 
     sampleFunction: function( name ) {
 
@@ -18,6 +18,6 @@
   }
 
   // Write a message to the debugger console
-  //WPBP_NS.Site.sampleFunction( 'Darlene' );
+  //CTCRUD_NS.Site.sampleFunction( 'Darlene' );
 
 })( window.jQuery );

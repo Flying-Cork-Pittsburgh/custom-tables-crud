@@ -1,14 +1,14 @@
 {
-  "name": "wordpress-base-plugin",
-  "author": "Daniel M. Hendricks",
+  "name": "custom-tables-crud",
+  "author": "Piotr Kubiak",
   "license": "GPL-2.0-or-later",
   "private": true,
   "config": {
-    "plugin_name": "WordPress Base Plugin",
-    "plugin_short_name": "Base Plugin",
-    "username": "dmhendricks",
-    "php_namespace": "VendorName\\PluginName",
-    "prefix": "wpbp"
+    "plugin_name": "WordPress Custom Tables CRUD Plugin",
+    "plugin_short_name": "Custom Tables CRUD",
+    "username": "piotrku",
+    "php_namespace": "PiotrKu\\CustomTablesCrud",
+    "prefix": "ctcrud"
   },
   "scripts": {
     "translate": "wp-pot --src 'app/**/*.php' --dest-file ./languages/$npm_package_name.pot --package $npm_package_name",
@@ -37,9 +37,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/dmhendricks/wordpress-base-plugin.git"
+    "url": "git://github.com/piotrku/custom-tables-crud"
   },
   "dependencies": {
-    "gulp-cli": "^2.0.1"
+    "gulp-cli": "^2.0.1",
+    "node-sass": "^4.11.0"
   }
 }

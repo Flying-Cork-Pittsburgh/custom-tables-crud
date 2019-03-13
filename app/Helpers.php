@@ -1,5 +1,5 @@
 <?php
-namespace VendorName\PluginName;
+namespace PiotrKu\CustomTablesCrud;
 use WordPress_ToolKit\Helpers\ArrayHelper;
 
 class Helpers extends Plugin {

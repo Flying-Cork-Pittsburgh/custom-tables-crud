@@ -1,6 +1,6 @@
 <?php
-namespace VendorName\PluginName\Shortcodes;
-use VendorName\PluginName\Plugin;
+namespace PiotrKu\CustomTablesCrud\Shortcodes;
+use PiotrKu\CustomTablesCrud\Plugin;
 
 class Shortcode_Loader extends Plugin {
 

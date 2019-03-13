@@ -1,5 +1,5 @@
 <?php
-namespace VendorName\PluginName;
+namespace PiotrKu\CustomTablesCrud;
 use WordPress_ToolKit\ObjectCache;
 use WordPress_ToolKit\ConfigRegistry;
 use WordPress_ToolKit\Helpers\ArrayHelper;

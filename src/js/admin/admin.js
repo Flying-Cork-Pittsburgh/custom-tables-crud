@@ -2,11 +2,11 @@
  * @preserve: Custom JavaScript Logic - WP Admin
  */
 
-;var WPBP_NS = WPBP_NS || {};
+;var CTCRUD_NS = CTCRUD_NS || {};
 
 (function($, undefined) {
 
-  WPBP_NS.Admin = {
+  CTCRUD_NS.Admin = {
 
     exampleFunction: function( name ) {
 
@@ -18,6 +18,6 @@
   }
 
   // Write a message to the debugger console
-  WPBP_NS.Admin.exampleFunction( 'James' );
+  CTCRUD_NS.Admin.exampleFunction( 'James' );
 
 })( window.jQuery );

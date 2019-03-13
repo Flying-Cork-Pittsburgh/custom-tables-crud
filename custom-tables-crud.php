@@ -1,20 +1,20 @@
 <?php
 /**
  * @wordpress-plugin
- * Plugin Name:       WordPress Base Plugin
- * Plugin URI:        https://github.com/dmhendricks/wordpress-base-plugin
+ * Plugin Name:       WordPress Custom Tables CRUD Plugin
+ * Plugin URI:        https://github.com/piotrku/custom-tables-crud
  * Description:       A boilerplate for WordPress plugins
- * Version:           0.5.4
- * Author:            Daniel M. Hendricks
- * Author URI:        https://www.danhendricks.com
+ * Version:           0.0.1
+ * Author:            Piotr Kubiak
+ * Author URI:        https://2pi.pl
  * License:           GPL-2.0
  * License URI:       https://opensource.org/licenses/GPL-2.0
- * Text Domain:       wordpress-base-plugin
+ * Text Domain:       custom-tables-crud
  * Domain Path:       languages
- * GitHub Plugin URI: dmhendricks/wordpress-base-plugin
+ * GitHub Plugin URI: piotrku/custom-tables-crud
  */
 
-/*	Copyright 2018	  Daniel M. Hendricks (https://www.danhendricks.com/)
+/*	Copyright 2018	  Piotr Kubiak (https://2pi.pl/)
 
 		This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
@@ -38,4 +38,4 @@ if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
 }
 
 // Initialize plugin
-\VendorName\PluginName\Plugin::instance();
+\PiotrKu\CustomTablesCrud\Plugin::instance();

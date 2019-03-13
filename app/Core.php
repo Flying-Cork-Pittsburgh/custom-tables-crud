@@ -1,5 +1,5 @@
 <?php
-namespace VendorName\PluginName;
+namespace PiotrKu\CustomTablesCrud;
 
 class Core extends Plugin {
 

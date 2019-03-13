@@ -1,21 +1,21 @@
 {
-  "name": "dmhendricks/wordpress-base-plugin",
+  "name": "piotrku/custom-tables-crud",
   "type": "wordpress-plugin",
-  "description": "A bloilerplate for WordPress plugins",
-  "keywords": ["wordpress", "plugin", "boilerplate", "carbonfields"],
-  "homepage": "https://2lab.net",
+  "description": "WordPress Custom Tables CRUD Plugin",
+  "keywords": ["wordpress", "plugin"],
+  "homepage": "https://2pi.pl",
   "license": "GPL-2.0-or-later",
   "authors": [
     {
-      "name": "Daniel M. Hendricks",
-      "homepage": "https://danhendricks.com",
+      "name": "Piotr Kubiak",
+      "homepage": "https://2pi.pl",
       "role": "Developer"
     }
   ],
   "support": {
-    "issues": "https://github.com/dmhendricks/wordpress-base-plugin/issues/",
-    "wiki": "https://github.com/dmhendricks/wordpress-base-plugin/wiki/",
-    "source": "https://github.com/dmhendricks/wordpress-base-plugin/"
+    "issues": "https://github.com/piotrku/custom-tables-crud/issues/",
+    "wiki": "https://github.com/piotrku/custom-tables-crud/wiki/",
+    "source": "https://github.com/piotrku/custom-tables-crud/"
   },
   "require": {
     "php": ">=7.0",
@@ -25,7 +25,7 @@
   },
   "autoload": {
     "psr-4": {
-      "VendorName\\PluginName\\": "app/"
+      "PiotrKu\\CustomTablesCrud\\": "app/"
     }
   }
 }

@@ -1,8 +1,8 @@
 {
-  "prefix": "wpbp",
-  "short_name": "My Plugin",
+  "prefix": "ctcrud",
+  "short_name": "Custom Tables CRUD",
   "object_cache": {
-    "group": "wordpress_base_plugin_cache",
+    "group": "custom_tables_crud_cache",
     "expire": 86400
   },
   "dependencies": {

@@ -1,4 +1,4 @@
-=== WordPress Base Plugin ===
+=== WordPress Custom Tables CRUD Plugin ===
 Contributors: hendridm
 Tags: wordpress,base,plugin,boilerplate,composer,carbonfields
 Donate link: https://paypal.me/danielhendricks
@@ -20,24 +20,24 @@ It is intended to be used as a starting point for creating WordPress plugins.
 
 * WordPress 4.6 or higher
 * PHP 5.6 or higher
-* [Carbon Fields](https://github.com/htmlburger/carbon-fields) 2.0 or higher (see the wiki section on [Carbon Fields](https://github.com/dmhendricks/wordpress-base-plugin/wiki#carbon-fields) for more info)
+* [Carbon Fields](https://github.com/htmlburger/carbon-fields) 2.0 or higher (see the wiki section on [Carbon Fields](https://github.com/piotrku/custom-tables-crud/wiki#carbon-fields) for more info)
 
 == Installation ==
-If you need tips on installing Node.js, Composer, Gulp & Bower, see [Installing Dependencies](https://github.com/dmhendricks/wordpress-base-plugin/wiki/Installing-Dependencies).
+If you need tips on installing Node.js, Composer, Gulp & Bower, see [Installing Dependencies](https://github.com/piotrku/custom-tables-crud/wiki/Installing-Dependencies).
 
 = Clone Repository =
 
 1. At command prompt, change to your `wp-content/plugins` directory.
-2. Clone the repository: `git clone https://github.com/dmhendricks/wordpress-base-plugin.git`
-3. Renamed the newly created `wordpress-base-plugin` directory to your own plugin slug.
+2. Clone the repository: `git clone https://github.com/piotrku/custom-tables-crud.git`
+3. Renamed the newly created `custom-tables-crud` directory to your own plugin slug.
 
 = Next Steps =
 
-See the [Getting Started](https://github.com/dmhendricks/wordpress-base-plugin/wiki#getting-started) documentation for further steps.
+See the [Getting Started](https://github.com/piotrku/custom-tables-crud/wiki#getting-started) documentation for further steps.
 
 == Frequently Asked Questions ==
 = Q. Why do I get the error "Warning: require( ... /autoload.php): failed to open stream: No such file or directory" when I try to activate it?
-A. You need to use the command prompt and [run Composer](https://github.com/dmhendricks/wordpress-base-plugin#composer) before this plugin will work.
+A. You need to use the command prompt and [run Composer](https://github.com/piotrku/custom-tables-crud#composer) before this plugin will work.
 
 = Q. What is Composer? =
 A. Composer is an application-level package manager for the PHP programming language that provides a standard format for managing dependencies of PHP software and required libraries.
@@ -55,8 +55,8 @@ A. Composer is an application-level package manager for the PHP programming lang
 name / The slug for your plugin. I usually set this to match the base directory name.
 config /
 	username / While not imparative, this will change the GitHub username paths. If you don't have a GitHub account, you can change it to whatever you like (such as your WordPress.com username).
-	php_namespace / A unique PHP namespace for your plugin. This value will replace the default VendorName\PluginName namespace used in the examples.
-	WPBP_NS / To avoid conflicts, the JavaScript examples use a unique object that contains function logic. Rename this to something that makes sense for your plugin.
+	php_namespace / A unique PHP namespace for your plugin. This value will replace the default PiotrKu\CustomTablesCrud namespace used in the examples.
+	CTCRUD_NS / To avoid conflicts, the JavaScript examples use a unique object that contains function logic. Rename this to something that makes sense for your plugin.
 
 2. To install Node & Gulp dependencies:
 $ npm install
@@ -91,4 +91,4 @@ Other Files
 
 plugin.json / Contains several global settings for the plugin. At minimum, you'll want to change the prefix value to something unique to your project (this is used to prefix all options added to the wp_options table). See Configuration & Constants for more information.
 
-wordpress-base-plugin.php / This is the main plugin loader file. You will want to change any settings in the header meta relavent to your plugin. If you're not interested in supporting automatic updates via GitHub Updater, you'll want to remove the "GitHub Plugin URI" line.
+custom-tables-crud.php / This is the main plugin loader file. You will want to change any settings in the header meta relavent to your plugin. If you're not interested in supporting automatic updates via GitHub Updater, you'll want to remove the "GitHub Plugin URI" line.
