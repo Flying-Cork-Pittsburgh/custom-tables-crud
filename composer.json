@@ -1,7 +1,7 @@
 {
   "name": "piotrku/custom-tables-crud",
   "type": "wordpress-plugin",
-  "description": "WordPress Custom Tables CRUD Plugin",
+  "description": "Custom Tables CRUD Plugin",
   "keywords": ["wordpress", "plugin"],
   "homepage": "https://2pi.pl",
   "license": "GPL-2.0-or-later",
@@ -19,8 +19,6 @@
   },
   "require": {
     "php": ">=7.0",
-    "dmhendricks/wordpress-toolkit": "^0.4.1",
-    "underdev/requirements": "^1.3",
     "composer/installers": "^1.0.6"
   },
   "autoload": {

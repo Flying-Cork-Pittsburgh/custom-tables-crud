@@ -6,7 +6,7 @@
 [![Analytics](https://ga-beacon.appspot.com/UA-67333102-2/piotrku/custom-tables-crud?flat)](https://github.com/igrigorik/ga-beacon/?utm_source=github.com&utm_medium=referral&utm_content=button&utm_campaign=dmhendricks%2Fcustom-tables-crud)
 [![Twitter](https://img.shields.io/twitter/url/https/github.com/piotrku/custom-tables-crud.svg?style=social)](https://twitter.com/danielhendricks)
 
-# WordPress Custom Tables CRUD Plugin
+# Custom Tables CRUD Plugin
 
 - [Documentation](https://github.com/piotrku/custom-tables-crud/wiki/)
 - [Features](#features)

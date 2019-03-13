@@ -1,4 +1,4 @@
-=== WordPress Custom Tables CRUD Plugin ===
+=== Custom Tables CRUD Plugin ===
 Contributors: hendridm
 Tags: wordpress,base,plugin,boilerplate,composer,carbonfields
 Donate link: https://paypal.me/danielhendricks

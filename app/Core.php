@@ -9,14 +9,14 @@ class Core extends Plugin {
     add_filter( 'body_class', array( $this, 'add_body_classes' ) );
 
     // Example - Remove Emoji code from header
-    if( $this->get_carbon_plugin_option( 'remove_header_emojicons' ) ) {
-      add_filter( 'init', array( $this, 'disable_wp_emojicons' ) );
-    }
+    // if( $this->get_carbon_plugin_option( 'remove_header_emojicons' ) ) {
+    //   add_filter( 'init', array( $this, 'disable_wp_emojicons' ) );
+    // }
 
     // Multisite Example - Change WP Admin footer text
-    if( is_multisite() && trim( $this->get_carbon_network_option( 'network_site_footer' ) ) ) {
-      add_filter( 'admin_footer_text', array( $this, 'set_admin_footer_text' ) );
-    }
+    // if( is_multisite() && trim( $this->get_carbon_network_option( 'network_site_footer' ) ) ) {
+    //   add_filter( 'admin_footer_text', array( $this, 'set_admin_footer_text' ) );
+    // }
 
     /**
       * Example - Ajax call for when "Clear Cache" is clicked from the admin bar dropdown.
@@ -25,8 +25,8 @@ class Core extends Plugin {
       *    logged in, you would need to uncommend the 'wp_ajax_nopriv_clear_object_cache_ajax'
       *    hook.
       */
-    if( current_user_can( 'manage_options' ) && $this->get_carbon_plugin_option( 'admin_bar_add_clear_cache' ) ) {
-      add_action( 'admin_bar_menu', array( $this, 'admin_bar_add_clear_cache' ), 900 );
+    if( current_user_can( 'manage_options' )) {
+      // add_action( 'admin_bar_menu', array( $this, 'admin_bar_add_clear_cache' ), 900 );
       //add_action( 'wp_ajax_nopriv_clear_object_cache_ajax', array( $this, 'clear_object_cache_ajax' )  );
       add_action( 'wp_ajax_clear_object_cache_ajax', array( $this, 'clear_object_cache_ajax' ) );
     }

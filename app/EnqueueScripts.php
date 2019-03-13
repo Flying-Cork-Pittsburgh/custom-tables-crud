@@ -1,6 +1,6 @@
 <?php
 namespace PiotrKu\CustomTablesCrud;
-use WordPress_ToolKit\ScriptObject;
+// use WordPress_ToolKit\ScriptObject;
 
 class EnqueueScripts extends Plugin {
 

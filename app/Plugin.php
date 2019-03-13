@@ -1,150 +1,178 @@
 <?php
-namespace PiotrKu\CustomTablesCrud;
-use WordPress_ToolKit\ObjectCache;
-use WordPress_ToolKit\ConfigRegistry;
-use WordPress_ToolKit\Helpers\ArrayHelper;
 
-class Plugin extends \WordPress_ToolKit\ToolKit {
+	namespace PiotrKu\CustomTablesCrud;
 
-  private static $instance;
-  public static $textdomain;
-  public static $config;
+	// use WordPress_ToolKit\ObjectCache;
+	// use WordPress_ToolKit\ConfigRegistry;
+	// use WordPress_ToolKit\Helpers\ArrayHelper;
 
-  public static function instance() {
+	class Plugin {
 
-    if ( !isset( self::$instance ) && !( self::$instance instanceof Plugin ) ) {
+		// private static $instance;
+		// public static $textdomain;
+		// public static $config;
 
-      self::$instance = new Plugin;
+		/**
+		* Construct the plugin object
+		*/
+		public function __construct()
+		{
+			// register actions
 
-      // Load plugin configuration
-      self::$config = self::$instance->init( dirname( __DIR__ ), trailingslashit( dirname( __DIR__ ) ) . 'plugin.json' );
-      self::$config->merge( new ConfigRegistry( [ 'plugin' => self::$instance->get_current_plugin_meta( ARRAY_A ) ] ) );
+			register_activation_hook('custom-tables-crud/custom-tables-crud.php', [$this, 'activate']);
+			register_activation_hook('custom-tables-crud/custom-tables-crud.php', [$this, 'deactivate']);
 
-      // Set Text Domain
-      self::$textdomain = self::$config->get( 'plugin/meta/TextDomain' ) ?: self::$config->get( 'plugin/slug' );
+			add_action('plugins_loaded', [$this, 'load_dependencies']);
 
-      // Define plugin version
-      if ( !defined( __NAMESPACE__ . '\VERSION' ) ) define( __NAMESPACE__ . '\VERSION', self::$config->get( 'plugin/meta/Version' ) );
+		} // END public function __construct
 
-      // Load dependecies and load plugin logic
-      register_activation_hook( self::$config->get( 'plugin/identifier' ), array( self::$instance, 'activate' ) );
-      add_action( 'plugins_loaded', array( self::$instance, 'load_dependencies' ) );
 
-    }
+		public static function instance()
+		{
 
-    return self::$instance;
+			$class = __CLASS__;
+			new $class;
 
-  }
+			/*
+			if (!isset(self::$instance) && !(self::$instance instanceof Plugin))
+			{
+				self::$instance = new Plugin;
 
-  /**
-    * Load plugin classes - Modify as needed, remove features that you don't need.
-    *
-    * @since 0.2.0
-    */
-  public function load_plugin() {
+				// Load plugin configuration
+				self::$config = self::$instance->init(dirname(__DIR__) , trailingslashit(dirname(__DIR__)) . 'plugin.json');
+				self::$config->merge(new ConfigRegistry([ 'plugin' => self::$instance->get_current_plugin_meta(ARRAY_A)]));
 
-    if( !$this->verify_dependencies() ) {
-      deactivate_plugins( self::$config->get( 'plugin/identifier' ) );
-      return;
-    }
+				// Set Text Domain
+				self::$textdomain = self::$config->get('plugin/meta/TextDomain') ?: self::$config->get('plugin/slug');
 
-    // Add Customizer panels and options
-    // new Settings\Customizer_Options();
+				// Define plugin version
+				if ( !defined( __NAMESPACE__ . '\VERSION' ) ) define( __NAMESPACE__ . '\VERSION', self::$config->get( 'plugin/meta/Version' ) );
 
-    // Enqueue scripts and stylesheets
-    new EnqueueScripts();
+				// Load dependecies and load plugin logic
+				register_activation_hook( self::$config->get( 'plugin/identifier' ), array( self::$instance, 'activate' ) );
+			}
+			*/
+			// self::$config->get( 'plugin/identifier' )
+			// 		'custom-tables-crud/custom-tables-crud.php'
+			// self::$instance
+			// 		'PiotrKu\CustomTablesCrud\Plugin'
 
-    // Load shortcodes
-    new Shortcodes\Shortcode_Loader();
+			// return self::$instance;
+			// return 'PiotrKu\CustomTablesCrud\Plugin';
+		}
 
-    // Perform core plugin logic
-    new Core();
 
-  }
 
-  /**
-    * Check plugin dependencies on activation.
-    *
-    * @since 0.2.0
-    */
-  public function activate() {
+		/**
+			* Check plugin dependencies on activation.
+			*
+			* @since 0.2.0
+			*/
+		// public function activate()
+		// {
+		// 	$this->verify_dependencies( true, true );
+		// }
 
-    $this->verify_dependencies( true, true );
 
-  }
+		/**
+			* Load plugin classes - Modify as needed, remove features that you don't need.
+			*
+			* @since 0.2.0
+			*/
+		public function load_plugin() {
 
-  /**
-    * Initialize Carbon Fields and load plugin logic
-    *
-    * @since 0.2.0
-    */
-  public function load_dependencies() {
+			if( !$this->verify_dependencies() ) {
+				deactivate_plugins( self::$config->get( 'plugin/identifier' ) );
+				return;
+			}
 
-    // if( class_exists( 'Carbon_Fields\\Carbon_Fields' ) ) {
-    //   add_action( 'after_setup_theme', array( 'Carbon_Fields\\Carbon_Fields', 'boot' ) );
-    // }
-    // add_action( 'carbon_fields_fields_registered', array( $this, 'load_plugin' ));
-  }
+			// Add Customizer panels and options
+			// new Settings\Customizer_Options();
 
-  /**
-    * Function to verify dependencies, such as if an outdated version of Carbon
-    *    Fields is detected.
-    *
-    * @param bool $die If true, plugin execution is halted with die(), useful for
-    *    outputting error(s) in during activate()
-    * @return bool
-    * @since 0.2.0
-    */
-  private function verify_dependencies( $die = false, $activate = false ) {
+			// Enqueue scripts and stylesheets
+			new EnqueueScripts();
 
-    // Check if underDEV_Requirements class is loaded
-    if( !class_exists( 'underDEV_Requirements' ) ) {
-      if( $die ) {
-        die( sprintf( __( '<strong>%s</strong>: One or more dependencies failed to load', self::$textdomain ), __( self::$config->get( 'plugin/meta/Name' ) ) ) );
-      } else {
-        return false;
-      }
-    }
+			// Load shortcodes
+			new Shortcodes\Shortcode_Loader();
 
-    $requirements = new \underDEV_Requirements( __( self::$config->get( 'plugin/meta/Name' ), self::$textdomain ), self::$config->get( 'dependencies' ) );
+			// Perform core plugin logic
+			new Core();
 
-    // Check for WordPress Toolkit
-    $requirements->add_check( 'wordpress-toolkit', function( $val, $res ) {
-      $wordpress_toolkit_version = defined( '\WordPress_ToolKit\VERSION' ) ? \WordPress_ToolKit\VERSION : null;
-      if( !$wordpress_toolkit_version ) {
-        $res->add_error( __( 'WordPress ToolKit not loaded.', self::$textdomain ) );
-      } else if( version_compare( $wordpress_toolkit_version, self::$config->get( 'dependencies/wordpress-toolkit' ), '<' ) ) {
-        $res->add_error( sprintf( __( 'An outdated version of WordPress ToolKit has been detected: %s (&gt;= %s required).', self::$textdomain ), $wordpress_toolkit_version, self::$config->get( 'dependencies/wordpress-toolkit' ) ) );
-      }
-    });
+		}
 
-    // Display errors if requirements not met
-    if( !$requirements->satisfied() ) {
-      if( $die ) {
-        die( $requirements->notice() );
-      } else {
-        add_action( 'admin_notices', array( $requirements, 'notice' ) );
-        return false;
-      }
-    }
+		/**
+			* Initialize Carbon Fields and load plugin logic
+			*
+			* @since 0.2.0
+			*/
+		public function load_dependencies()
+		{
+			// if( class_exists( 'Carbon_Fields\\Carbon_Fields' ) ) {
+			//   add_action( 'after_setup_theme', array( 'Carbon_Fields\\Carbon_Fields', 'boot' ) );
+			// }
+			// add_action( 'carbon_fields_fields_registered', array( $this, 'load_plugin' ));
+			$this->load_plugin();
+		}
 
-    return true;
+		/**
+			* Function to verify dependencies, such as if an outdated version of Carbon
+			*    Fields is detected.
+			*
+			* @param bool $die If true, plugin execution is halted with die(), useful for
+			*    outputting error(s) in during activate()
+			* @return bool
+			* @since 0.2.0
+			*/
+		private function verify_dependencies( $die = false, $activate = false ) {
 
-  }
+			// Check if underDEV_Requirements class is loaded
+			/* if( !class_exists( 'underDEV_Requirements' ) ) {
+				if( $die ) {
+					die( sprintf( __( '<strong>%s</strong>: One or more dependencies failed to load', self::$textdomain ), __( self::$config->get( 'plugin/meta/Name' ) ) ) );
+				} else {
+					return false;
+				}
+			}
 
-  /**
-    * Append a field prefix as defined in $config
-    *
-    * @param string $field_name The string/field to prefix
-    * @param string $before String to add before the prefix
-    * @param string $after String to add after the prefix
-    * @return string Prefixed string/field value
-    * @since 0.1.0
-    */
-  public static function prefix( $field_name = null, $before = '', $after = '_' ) {
+			$requirements = new \underDEV_Requirements( __( self::$config->get( 'plugin/meta/Name' ), self::$textdomain ), self::$config->get( 'dependencies' ) );
 
-    $prefix = $before . self::$config->get( 'prefix' ) . $after;
-    return $field_name !== null ? $prefix . $field_name : $prefix;
+			// Check for WordPress Toolkit
+			$requirements->add_check( 'wordpress-toolkit', function( $val, $res ) {
+				$wordpress_toolkit_version = defined( '\WordPress_ToolKit\VERSION' ) ? \WordPress_ToolKit\VERSION : null;
+				if( !$wordpress_toolkit_version ) {
+					$res->add_error( __( 'WordPress ToolKit not loaded.', self::$textdomain ) );
+				} else if( version_compare( $wordpress_toolkit_version, self::$config->get( 'dependencies/wordpress-toolkit' ), '<' ) ) {
+					$res->add_error( sprintf( __( 'An outdated version of WordPress ToolKit has been detected: %s (&gt;= %s required).', self::$textdomain ), $wordpress_toolkit_version, self::$config->get( 'dependencies/wordpress-toolkit' ) ) );
+				}
+			});
 
-  }
-}
+			// Display errors if requirements not met
+			if( !$requirements->satisfied() ) {
+				if( $die ) {
+					die( $requirements->notice() );
+				} else {
+					add_action( 'admin_notices', array( $requirements, 'notice' ) );
+					return false;
+				}
+			} */
+
+			return true;
+
+		}
+
+		/**
+			* Append a field prefix as defined in $config
+			*
+			* @param string $field_name The string/field to prefix
+			* @param string $before String to add before the prefix
+			* @param string $after String to add after the prefix
+			* @return string Prefixed string/field value
+			* @since 0.1.0
+			*/
+		/* public static function prefix( $field_name = null, $before = '', $after = '_' ) {
+
+			$prefix = $before . self::$config->get( 'prefix' ) . $after;
+			return $field_name !== null ? $prefix . $field_name : $prefix;
+
+		} */
+	}

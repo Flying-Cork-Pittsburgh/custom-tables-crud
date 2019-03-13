@@ -1,7 +1,7 @@
 <?php
 /**
  * @wordpress-plugin
- * Plugin Name:       WordPress Custom Tables CRUD Plugin
+ * Plugin Name:       Custom Tables CRUD Plugin
  * Plugin URI:        https://github.com/piotrku/custom-tables-crud
  * Description:       A boilerplate for WordPress plugins
  * Version:           0.0.1
@@ -31,10 +31,10 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-if( !defined( 'ABSPATH' ) ) die();
+if (!defined('ABSPATH')) die();
 
-if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
-  require( __DIR__ . '/vendor/autoload.php' );
+if (file_exists(__DIR__ . '/vendor/autoload.php')) {
+  require(__DIR__ . '/vendor/autoload.php');
 }
 
 // Initialize plugin

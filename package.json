@@ -4,7 +4,7 @@
   "license": "GPL-2.0-or-later",
   "private": true,
   "config": {
-    "plugin_name": "WordPress Custom Tables CRUD Plugin",
+    "plugin_name": "Custom Tables CRUD Plugin",
     "plugin_short_name": "Custom Tables CRUD",
     "username": "piotrku",
     "php_namespace": "PiotrKu\\CustomTablesCrud",
