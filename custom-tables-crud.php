@@ -38,4 +38,4 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
 }
 
 // Initialize plugin
-\PiotrKu\CustomTablesCrud\Plugin::instance();
+\PiotrKu\CustomTablesCrud\Plugin::getInstance();

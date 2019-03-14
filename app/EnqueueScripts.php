@@ -21,7 +21,6 @@ class EnqueueScripts extends Plugin {
       if( in_array( 'backend', $enqueue_font_awesome) )
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_font_awesome' ) );
     }
-
   }
 
   /**

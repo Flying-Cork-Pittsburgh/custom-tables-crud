@@ -8,58 +8,105 @@
 
 	class Plugin {
 
-		// private static $instance;
-		// public static $textdomain;
-		// public static $config;
+		protected static $instance = NULL;
+		public static $textdomain = NULL;
+		public static $config = [];
+		public static $db = NULL;
 
 		/**
 		* Construct the plugin object
 		*/
 		public function __construct()
 		{
-			// register actions
+			self::$config = [
+				'prefix'					=> 'ctcrud',
+				'shortName'				=> 'Custom Tables CRUD',
+				'pluginIdentifier'	=> 'custom-tables-crud/custom-tables-crud.php',
+				'dependencies' 		=>
+									[
+										'php' => '7.0',
+										'wp' => '4.8',
+									],
+			];
 
-			register_activation_hook('custom-tables-crud/custom-tables-crud.php', [$this, 'activate']);
-			register_activation_hook('custom-tables-crud/custom-tables-crud.php', [$this, 'deactivate']);
+			self::$textdomain			= self::$config['prefix'];
 
-			add_action('plugins_loaded', [$this, 'load_dependencies']);
+			register_activation_hook(self::$config['pluginIdentifier'], [$this, 'activate']);
+			register_activation_hook(self::$config['pluginIdentifier'], [$this, 'deactivate']);
 
-		} // END public function __construct
+			add_action('plugins_loaded', [$this, 'loadDependencies']);
 
-
-		public static function instance()
-		{
-
-			$class = __CLASS__;
-			new $class;
-
-			/*
-			if (!isset(self::$instance) && !(self::$instance instanceof Plugin))
-			{
-				self::$instance = new Plugin;
-
-				// Load plugin configuration
-				self::$config = self::$instance->init(dirname(__DIR__) , trailingslashit(dirname(__DIR__)) . 'plugin.json');
-				self::$config->merge(new ConfigRegistry([ 'plugin' => self::$instance->get_current_plugin_meta(ARRAY_A)]));
-
-				// Set Text Domain
-				self::$textdomain = self::$config->get('plugin/meta/TextDomain') ?: self::$config->get('plugin/slug');
-
-				// Define plugin version
-				if ( !defined( __NAMESPACE__ . '\VERSION' ) ) define( __NAMESPACE__ . '\VERSION', self::$config->get( 'plugin/meta/Version' ) );
-
-				// Load dependecies and load plugin logic
-				register_activation_hook( self::$config->get( 'plugin/identifier' ), array( self::$instance, 'activate' ) );
-			}
-			*/
-			// self::$config->get( 'plugin/identifier' )
-			// 		'custom-tables-crud/custom-tables-crud.php'
-			// self::$instance
-			// 		'PiotrKu\CustomTablesCrud\Plugin'
-
-			// return self::$instance;
-			// return 'PiotrKu\CustomTablesCrud\Plugin';
 		}
+
+
+		public static function getInstance()
+		{
+			NULL === self::$instance && self::$instance = new self;
+			return self::$instance;
+		}
+
+
+		/**
+			* Initialize dependet libs and load plugin logic
+			*
+			*/
+		public function loadDependencies()
+		{
+			$this->loadPlugin();
+		}
+
+
+		/**
+			* Load plugin classes - Modify as needed, remove features that you don't need.
+			*
+			*/
+		public function loadPlugin() {
+
+			if (!$this->verifyDependencies()) {
+				deactivate_plugins(self::$config['pluginIdentifier']);
+				return;
+			}
+
+			// Load shortcodes
+			// new Shortcodes\Shortcode_Loader();
+
+			// Setup database connection
+			// self::$db = new Database\Connection();
+
+			// Load table setup
+			// new Models\TableStructureLoader();
+
+
+			die('test');
+			// Add Customizer panels and options
+			// new Settings\Customizer_Options();
+
+			// Enqueue scripts and stylesheets
+			// new EnqueueScripts();
+
+			// Perform core plugin logic
+			// new Core();
+		}
+
+
+		/**
+			* Append a field prefix as defined in $config
+			*
+			* @param string $field_name The string/field to prefix
+			* @param string $before String to add before the prefix
+			* @param string $after String to add after the prefix
+			* @return string Prefixed string/field value
+			* @since 0.1.0
+			*/
+		public static function prefix( $field_name = null, $before = '', $after = '_' ) {
+
+			$prefix = $before . self::$config['prefix'] . $after;
+			return $field_name !== null ? $prefix . $field_name : $prefix;
+
+		}
+
+
+
 
 
 
@@ -68,52 +115,27 @@
 			*
 			* @since 0.2.0
 			*/
-		// public function activate()
-		// {
-		// 	$this->verify_dependencies( true, true );
-		// }
-
-
-		/**
-			* Load plugin classes - Modify as needed, remove features that you don't need.
-			*
-			* @since 0.2.0
-			*/
-		public function load_plugin() {
-
-			if( !$this->verify_dependencies() ) {
-				deactivate_plugins( self::$config->get( 'plugin/identifier' ) );
-				return;
-			}
-
-			// Add Customizer panels and options
-			// new Settings\Customizer_Options();
-
-			// Enqueue scripts and stylesheets
-			new EnqueueScripts();
-
-			// Load shortcodes
-			new Shortcodes\Shortcode_Loader();
-
-			// Perform core plugin logic
-			new Core();
-
-		}
-
-		/**
-			* Initialize Carbon Fields and load plugin logic
-			*
-			* @since 0.2.0
-			*/
-		public function load_dependencies()
+		public function activate()
 		{
-			// if( class_exists( 'Carbon_Fields\\Carbon_Fields' ) ) {
-			//   add_action( 'after_setup_theme', array( 'Carbon_Fields\\Carbon_Fields', 'boot' ) );
-			// }
-			// add_action( 'carbon_fields_fields_registered', array( $this, 'load_plugin' ));
-			$this->load_plugin();
+			$this->verifyDependencies( true, true );
 		}
 
+
+		/**
+			* Check plugin dependencies on deactivation.
+			*
+			* @since 0.2.0
+			*/
+		public function deactivate()
+		{
+			$this->cleanUp();
+		}
+
+
+		private function cleanUp( $die = false, $activate = false )
+		{
+			die('CRUD plugin cleanUp');
+		}
 		/**
 			* Function to verify dependencies, such as if an outdated version of Carbon
 			*    Fields is detected.
@@ -123,8 +145,8 @@
 			* @return bool
 			* @since 0.2.0
 			*/
-		private function verify_dependencies( $die = false, $activate = false ) {
-
+		private function verifyDependencies( $die = false, $activate = false )
+		{
 			// Check if underDEV_Requirements class is loaded
 			/* if( !class_exists( 'underDEV_Requirements' ) ) {
 				if( $die ) {
@@ -157,22 +179,8 @@
 			} */
 
 			return true;
-
 		}
 
-		/**
-			* Append a field prefix as defined in $config
-			*
-			* @param string $field_name The string/field to prefix
-			* @param string $before String to add before the prefix
-			* @param string $after String to add after the prefix
-			* @return string Prefixed string/field value
-			* @since 0.1.0
-			*/
-		/* public static function prefix( $field_name = null, $before = '', $after = '_' ) {
 
-			$prefix = $before . self::$config->get( 'prefix' ) . $after;
-			return $field_name !== null ? $prefix . $field_name : $prefix;
 
-		} */
 	}
