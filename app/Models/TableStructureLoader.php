@@ -2,23 +2,28 @@
 
 	namespace PiotrKu\CustomTablesCrud\Models;
 
-	use PiotrKu\CustomTablesCrud\Plugin;
+	// use PiotrKu\CustomTablesCrud\Plugin;
+	use PiotrKu\CustomTablesCrud\Database\Connection;
 
 
-	class TableStructureLoader extends Plugin
+	class TableStructureLoader// extends Plugin
 	{
 		/**
 		 * @var array Shortcode class name to register
 		 * @since 0.4.0
 		 */
 		protected $tables;
+		protected $db;
 
 		public function __construct()
 		{
 			$this->tables = ['test'];
 
-			// foreach( $this->posttypes as $postTypesClass ) {
-			// 	if( class_exists( $postTypesClass ) ) new $postTypesClass();
-			// }
+			// Setup database connection
+			$this->db = new Connection();
+		}
+
+		public static function getElems(){
+			return ['test', 'tost', 'tast'];
 		}
 	}

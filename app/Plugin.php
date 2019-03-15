@@ -6,19 +6,22 @@
 	// use WordPress_ToolKit\ConfigRegistry;
 	// use WordPress_ToolKit\Helpers\ArrayHelper;
 
+	use PiotrKu\CustomTablesCrud\Views\InitMenuLinks;
+
+
 	class Plugin {
 
-		protected static $instance = NULL;
-		public static $textdomain = NULL;
-		public static $config = [];
-		public static $db = NULL;
+		protected $instance = NULL;
+		public $textdomain = NULL;
+		public $config = [];
+		// public $db = NULL;
 
 		/**
 		* Construct the plugin object
 		*/
 		public function __construct()
 		{
-			self::$config = [
+			$this->config = [
 				'prefix'					=> 'ctcrud',
 				'shortName'				=> 'Custom Tables CRUD',
 				'pluginIdentifier'	=> 'custom-tables-crud/custom-tables-crud.php',
@@ -29,20 +32,24 @@
 									],
 			];
 
-			self::$textdomain			= self::$config['prefix'];
+			$this->textdomain			= $this->config['prefix'];
 
-			register_activation_hook(self::$config['pluginIdentifier'], [$this, 'activate']);
-			register_activation_hook(self::$config['pluginIdentifier'], [$this, 'deactivate']);
+			register_activation_hook($this->config['pluginIdentifier'], [$this, 'activate']);
+			register_activation_hook($this->config['pluginIdentifier'], [$this, 'deactivate']);
 
 			add_action('plugins_loaded', [$this, 'loadDependencies']);
 
 		}
 
 
-		public static function getInstance()
+		public function getInstance()
 		{
-			NULL === self::$instance && self::$instance = new self;
-			return self::$instance;
+			// NULL === $this->instance && $this->instance = new self;
+			if (NULL === $this->instance) {
+				$this->instance = new self;
+			}
+
+			// return $this->instance;
 		}
 
 
@@ -63,21 +70,24 @@
 		public function loadPlugin() {
 
 			if (!$this->verifyDependencies()) {
-				deactivate_plugins(self::$config['pluginIdentifier']);
+				deactivate_plugins($this->config['pluginIdentifier']);
 				return;
 			}
 
 			// Load shortcodes
 			// new Shortcodes\Shortcode_Loader();
 
-			// Setup database connection
-			// self::$db = new Database\Connection();
-
 			// Load table setup
 			// new Models\TableStructureLoader();
 
+			// Setup Admin page
+			new InitMenuLinks();
 
-			die('test');
+			// Setup Admin page
+			// new Controllers\IndexController();
+
+
+			// die('test');
 			// Add Customizer panels and options
 			// new Settings\Customizer_Options();
 
@@ -98,9 +108,9 @@
 			* @return string Prefixed string/field value
 			* @since 0.1.0
 			*/
-		public static function prefix( $field_name = null, $before = '', $after = '_' ) {
+		public function prefix( $field_name = null, $before = '', $after = '_' ) {
 
-			$prefix = $before . self::$config['prefix'] . $after;
+			$prefix = $before . $this->config['prefix'] . $after;
 			return $field_name !== null ? $prefix . $field_name : $prefix;
 
 		}
@@ -150,21 +160,21 @@
 			// Check if underDEV_Requirements class is loaded
 			/* if( !class_exists( 'underDEV_Requirements' ) ) {
 				if( $die ) {
-					die( sprintf( __( '<strong>%s</strong>: One or more dependencies failed to load', self::$textdomain ), __( self::$config->get( 'plugin/meta/Name' ) ) ) );
+					die( sprintf( __( '<strong>%s</strong>: One or more dependencies failed to load', $this->textdomain ), __( $this->config->get( 'plugin/meta/Name' ) ) ) );
 				} else {
 					return false;
 				}
 			}
 
-			$requirements = new \underDEV_Requirements( __( self::$config->get( 'plugin/meta/Name' ), self::$textdomain ), self::$config->get( 'dependencies' ) );
+			$requirements = new \underDEV_Requirements( __( $this->config->get( 'plugin/meta/Name' ), $this->textdomain ), $this->config->get( 'dependencies' ) );
 
 			// Check for WordPress Toolkit
 			$requirements->add_check( 'wordpress-toolkit', function( $val, $res ) {
 				$wordpress_toolkit_version = defined( '\WordPress_ToolKit\VERSION' ) ? \WordPress_ToolKit\VERSION : null;
 				if( !$wordpress_toolkit_version ) {
-					$res->add_error( __( 'WordPress ToolKit not loaded.', self::$textdomain ) );
-				} else if( version_compare( $wordpress_toolkit_version, self::$config->get( 'dependencies/wordpress-toolkit' ), '<' ) ) {
-					$res->add_error( sprintf( __( 'An outdated version of WordPress ToolKit has been detected: %s (&gt;= %s required).', self::$textdomain ), $wordpress_toolkit_version, self::$config->get( 'dependencies/wordpress-toolkit' ) ) );
+					$res->add_error( __( 'WordPress ToolKit not loaded.', $this->textdomain ) );
+				} else if( version_compare( $wordpress_toolkit_version, $this->config->get( 'dependencies/wordpress-toolkit' ), '<' ) ) {
+					$res->add_error( sprintf( __( 'An outdated version of WordPress ToolKit has been detected: %s (&gt;= %s required).', $this->textdomain ), $wordpress_toolkit_version, $this->config->get( 'dependencies/wordpress-toolkit' ) ) );
 				}
 			});
 

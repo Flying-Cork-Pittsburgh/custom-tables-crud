@@ -2,7 +2,7 @@
 
 	namespace PiotrKu\CustomTablesCrud\Database;
 
-	use PiotrKu\CustomTablesCrud\Plugin;
+	// use PiotrKu\CustomTablesCrud\Plugin;
 
 
 	class Connection
