@@ -25,11 +25,15 @@
 		{
 
 			\write_log('init Plugin __construct');
+			\write_log('init Plugin requiest/action ' . serialize($_REQUEST));
+
+			if (wp_doing_cron()) return;
 
 			self::$config = [
 				'prefix'					=> 'ctcrud',
 				'shortName'				=> 'Custom Tables CRUD',
 				'pluginIdentifier'	=> 'custom-tables-crud/custom-tables-crud.php',
+				'pluginDir'				=> dirname(dirname(__FILE__), 1),
 				'dependencies' 		=>
 									[
 										'php' => '7.0',
@@ -140,9 +144,6 @@
 				return;
 			}
 
-			// Load shortcodes
-			// new Shortcodes\Shortcode_Loader();
-
 			// Load table setup
 			// new Models\TableStructureLoader();
 
@@ -157,7 +158,7 @@
 			$menuLinksProvider->addMenuPages();
 			$this->setConfig('menuLinks', $menuLinksProvider->getMenuLinks());
 
-			echo 'test';
+			// echo 'test';
 			// Setup Admin page
 			// new Controllers\IndexController();
 

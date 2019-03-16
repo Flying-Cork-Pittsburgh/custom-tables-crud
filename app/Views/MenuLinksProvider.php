@@ -3,7 +3,7 @@
 	namespace PiotrKu\CustomTablesCrud\Views;
 
 	use PiotrKu\CustomTablesCrud\Plugin;
-	// use PiotrKu\CustomTablesCrud\Views\Base as View_Base;
+	use PiotrKu\CustomTablesCrud\Controllers\Index as Controller_Index;
 
 
 	class MenuLinksProvider
@@ -52,11 +52,8 @@
 			// i.e. 'toplevel_page_ctcrud_wholesaler_prods'
 			$current_view = $this->menuLinks[current_filter()];
 
-			// include(dirname(__FILE__).'/views/'.$current_view['table_name'].'.php');
-			// include(/home/vagrant/code/budio/cms/wp-content/plugins/custom-tables-crud/app/Views/views/wholesaler_prods.php):
-
-			echo 'now time to get some data from the DB table for: ' . $current_view['table_name'];
-			// die(' / test');
+			// delegate action where it belongs - view controller
+			Controller_Index::renderPage($current_view['table_name']);
 		}
 
 		/**
