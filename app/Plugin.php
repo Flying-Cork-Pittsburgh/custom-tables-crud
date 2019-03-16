@@ -11,17 +11,20 @@
 
 	class Plugin {
 
-		protected $instance = NULL;
-		public $textdomain = NULL;
-		public $config = [];
+		private static $instance;
+		public static $textdomain;
+		public static $config;
 		// public $db = NULL;
 
 		/**
 		* Construct the plugin object
 		*/
-		public function __construct()
+		private function __construct()
 		{
-			$this->config = [
+
+			\write_log('init');
+
+			self::$config = [
 				'prefix'					=> 'ctcrud',
 				'shortName'				=> 'Custom Tables CRUD',
 				'pluginIdentifier'	=> 'custom-tables-crud/custom-tables-crud.php',
@@ -30,26 +33,84 @@
 										'php' => '7.0',
 										'wp' => '4.8',
 									],
+				'tables'					=>
+									[
+										'wholesaler_prods' => [
+											'table_name'		=> 'wholesaler_prods',
+											'page_title'		=> 'Edycja produktów hurtowni',
+											'menu_title'		=> 'Produkty hurtow+',
+											'capability'		=> 'manage_product_import',
+											'fields' => [
+												'wholesaler_product_title' => [
+													'type'		=> 'varchar(255)',
+													'cast'		=> 'string',
+													'default'	=> null,
+													'null'		=> true,
+												],
+												'wholesaler_price' => [
+													'type'		=> 'float',
+													'cast'		=>	'float',
+													'default'	=> null,
+													'null'		=> true,
+												],
+												'wholesaler_offered' => [
+													'type'		=> 'tinyint(3) unsigned',
+													'cast'		=> 'boolean',
+													'default'	=> 0,
+													'null'		=> false,
+												],
+											],
+										],
+										'postal_codes' => [
+											'table_name'		=> 'postal_codes',
+											'page_title'		=> 'Edycja kodów pocztowych',
+											'menu_title'		=> 'Kody pocztowe',
+											'capability'		=> 'manage_product_import',
+											'fields' => [
+												'postal' => [
+													'type'		=> 'char(6)',
+													'cast'		=> 'string',
+													'default'	=> null,
+													'null'		=> true,
+												],
+												'address' => [
+													'type'		=> 'varchar(120)',
+													'cast'		=>	'string',
+													'default'	=> null,
+													'null'		=> true,
+												],
+											],
+										],
+									],
 			];
 
-			$this->textdomain			= $this->config['prefix'];
+			self::$textdomain			= self::$config['prefix'];
 
-			register_activation_hook($this->config['pluginIdentifier'], [$this, 'activate']);
-			register_activation_hook($this->config['pluginIdentifier'], [$this, 'deactivate']);
+			register_activation_hook(self::$config['pluginIdentifier'], [$this, 'activate']);
+			register_activation_hook(self::$config['pluginIdentifier'], [$this, 'deactivate']);
 
 			add_action('plugins_loaded', [$this, 'loadDependencies']);
-
 		}
 
 
-		public function getInstance()
+		public static function getInstance()
 		{
-			// NULL === $this->instance && $this->instance = new self;
-			if (NULL === $this->instance) {
-				$this->instance = new self;
+			if (!isset(self::$instance)) {
+				self::$instance = new self();
 			}
 
-			// return $this->instance;
+			return self::$instance;
+		}
+
+
+		public static function getConfig($part)
+		{
+			return $part && isset(self::$config[$part]) ? self::$config[$part] : self::$config;
+		}
+
+		public static function getPrefix()
+		{
+			return self::$config['prefix'];
 		}
 
 
@@ -57,9 +118,9 @@
 			* Initialize dependet libs and load plugin logic
 			*
 			*/
-		public function loadDependencies()
+		public static function loadDependencies()
 		{
-			$this->loadPlugin();
+			self::loadPlugin();
 		}
 
 
