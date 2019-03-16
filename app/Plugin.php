@@ -6,14 +6,14 @@
 	// use WordPress_ToolKit\ConfigRegistry;
 	// use WordPress_ToolKit\Helpers\ArrayHelper;
 
-	use PiotrKu\CustomTablesCrud\Views\InitMenuLinks;
+	use PiotrKu\CustomTablesCrud\Views\MenuLinksProvider;
 
 
 	class Plugin {
 
 		private static $instance;
 		public static $textdomain;
-		public static $config;
+		private static $config;
 		// public $db = NULL;
 
 		/**
@@ -103,15 +103,18 @@
 		}
 
 
-		public static function getConfig($part)
+		public static function getConfig($key)
 		{
-			return $part && isset(self::$config[$part]) ? self::$config[$part] : self::$config;
+			return $key && isset(self::$config[$key]) ? self::$config[$key] : self::$config;
 		}
 
-		public static function getPrefix()
+
+		public static function setConfig($key, $value)
 		{
-			return self::$config['prefix'];
+			self::$config[$key] = $value;
 		}
+
+
 
 
 		/**
@@ -142,7 +145,10 @@
 			// new Models\TableStructureLoader();
 
 			// Setup Admin page
-			new InitMenuLinks();
+			$menuLinksProvider = new MenuLinksProvider();
+			$menuLinksProvider->addMenuPages();
+			$this->setConfig('menuLinks', $menuLinksProvider->getMenuLinks());
+
 
 			// Setup Admin page
 			// new Controllers\IndexController();
