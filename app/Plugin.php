@@ -7,6 +7,8 @@
 	// use WordPress_ToolKit\Helpers\ArrayHelper;
 
 	use PiotrKu\CustomTablesCrud\Views\MenuLinksProvider;
+	// use PiotrKu\CustomTablesCrud\Database\DatabaseConnection;
+	use PiotrKu\CustomTablesCrud\Database\DatabaseConnectionFactory;
 
 
 	class Plugin {
@@ -22,7 +24,7 @@
 		private function __construct()
 		{
 
-			\write_log('init');
+			\write_log('init Plugin __construct');
 
 			self::$config = [
 				'prefix'					=> 'ctcrud',
@@ -144,12 +146,18 @@
 			// Load table setup
 			// new Models\TableStructureLoader();
 
+			// Setup DB
+			// $database = (new DatabaseConnectionFactory)->getConnection();
+			$databaseConnectionFactory = new DatabaseConnectionFactory();
+			$database = $databaseConnectionFactory->makeConnection('mysql');
+			$this->setConfig('database', $database);
+
 			// Setup Admin page
 			$menuLinksProvider = new MenuLinksProvider();
 			$menuLinksProvider->addMenuPages();
 			$this->setConfig('menuLinks', $menuLinksProvider->getMenuLinks());
 
-
+			echo 'test';
 			// Setup Admin page
 			// new Controllers\IndexController();
 

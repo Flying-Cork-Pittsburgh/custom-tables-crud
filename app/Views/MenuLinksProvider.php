@@ -39,8 +39,6 @@
 					34
 				);
 
-
-
 				$this->menuLinks[$view_hook_name] = $table;
 			}
 		}
