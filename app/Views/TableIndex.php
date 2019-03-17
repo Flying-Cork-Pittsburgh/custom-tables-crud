@@ -29,7 +29,7 @@
 
 			echo '<div class="wrap">';
 
-			echo 'some rows from the DB here:<br>';
+			echo 'WE SHOULDNT BE HERE ??<br> some rows from the DB here:<br>';
 
 			foreach ($elems as $elem){
 				echo 'elem: ' . $elem . '<br>';

@@ -25,8 +25,9 @@
 		{
 
 			\write_log('init Plugin __construct');
-			\write_log('init Plugin requiest/action ' . serialize($_REQUEST));
+			// \write_log('init Plugin requiest/action ' . serialize($_REQUEST));
 
+			// no need to init the plugin when WP is running cron by cron
 			if (wp_doing_cron()) return;
 
 			self::$config = [
@@ -39,27 +40,38 @@
 										'php' => '7.0',
 										'wp' => '4.8',
 									],
+				'connection'			=> null,
 				'tables'					=>
 									[
 										'wholesaler_prods' => [
-											'table_name'		=> 'wholesaler_prods',
-											'page_title'		=> 'Edycja produktów hurtowni',
-											'menu_title'		=> 'Produkty hurtow+',
+											'tableName'			=> 'wholesaler_prods',
+											'pageTitle'			=> 'Edycja produktów hurtowni',
+											'menuTitle'			=> 'Produkty hurtow+',
 											'capability'		=> 'manage_product_import',
 											'fields' => [
+												'id' => [
+													'title'		=> 'Id',
+													'type'		=> 'bigint(20) unsigned',
+													'cast'		=> 'int',
+													'default'	=> null,
+													'null'		=> false,
+												],
 												'wholesaler_product_title' => [
+													'title'		=> 'Nazwa produktu',
 													'type'		=> 'varchar(255)',
 													'cast'		=> 'string',
 													'default'	=> null,
 													'null'		=> true,
 												],
 												'wholesaler_price' => [
+													'title'		=> 'Cena w hurtowni',
 													'type'		=> 'float',
 													'cast'		=>	'float',
 													'default'	=> null,
 													'null'		=> true,
 												],
 												'wholesaler_offered' => [
+													'title'		=> 'W ofercie hurtowni',
 													'type'		=> 'tinyint(3) unsigned',
 													'cast'		=> 'boolean',
 													'default'	=> 0,
@@ -68,18 +80,27 @@
 											],
 										],
 										'postal_codes' => [
-											'table_name'		=> 'postal_codes',
-											'page_title'		=> 'Edycja kodów pocztowych',
-											'menu_title'		=> 'Kody pocztowe',
+											'tableName'		=> 'postal_codes',
+											'pageTitle'		=> 'Edycja kodów pocztowych',
+											'menuTitle'		=> 'Kody pocztowe',
 											'capability'		=> 'manage_product_import',
 											'fields' => [
+												'id' => [
+													'title'		=> 'Id',
+													'type'		=> 'int(10) unsigned',
+													'cast'		=> 'int',
+													'default'	=> null,
+													'null'		=> false,
+												],
 												'postal' => [
+													'title'		=> 'Kod pocztowy',
 													'type'		=> 'char(6)',
 													'cast'		=> 'string',
 													'default'	=> null,
 													'null'		=> true,
 												],
 												'address' => [
+													'title'		=> 'Adres',
 													'type'		=> 'varchar(120)',
 													'cast'		=>	'string',
 													'default'	=> null,
@@ -150,8 +171,8 @@
 			// Setup DB
 			// $database = (new DatabaseConnectionFactory)->getConnection();
 			$databaseConnectionFactory = new DatabaseConnectionFactory();
-			$database = $databaseConnectionFactory->makeConnection('mysql');
-			$this->setConfig('database', $database);
+			$connection = $databaseConnectionFactory->makeConnection('mysql');
+			$this->setConfig('connection', $connection);
 
 			// Setup Admin page
 			$menuLinksProvider = new MenuLinksProvider();

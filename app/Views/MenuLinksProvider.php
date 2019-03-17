@@ -25,15 +25,15 @@
 		 */
 		public function addMenuPages()
 		{
-			foreach (Plugin::getConfig('tables') as $table_name => $table)
+			foreach (Plugin::getConfig('tables') as $tableName => $table)
 			{
-				$table['page_slug'] = Plugin::getConfig('prefix').'_'.$table_name;
+				$table['pageSlug'] = Plugin::getConfig('prefix').'_'.$tableName;
 
 				$view_hook_name = add_menu_page(
-					$table['page_title'],
-					$table['menu_title'],
+					$table['pageTitle'],
+					$table['menuTitle'],
 					$table['capability'],
-					$table['page_slug'],
+					$table['pageSlug'],
 					[$this, 'loadView'],
 					'dashicons-products',
 					34
@@ -53,7 +53,7 @@
 			$current_view = $this->menuLinks[current_filter()];
 
 			// delegate action where it belongs - view controller
-			Controller_Index::renderPage($current_view['table_name']);
+			Controller_Index::renderPage($current_view['tableName']);
 		}
 
 		/**
@@ -70,8 +70,8 @@
 				$menuLinks = [];
 				foreach((array)$this->menuLinks as $key => $menuLink)
 				{
-					$menuLink['page_hook_id'] = $key;
-					$menuLinks[$menuLink['table_name']] = $menuLink;
+					$menuLink['pageHookId'] = $key;
+					$menuLinks[$menuLink['tableName']] = $menuLink;
 				}
 				return $menuLinks;
 			}

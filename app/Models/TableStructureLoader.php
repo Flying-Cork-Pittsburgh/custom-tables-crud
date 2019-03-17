@@ -2,8 +2,8 @@
 
 	namespace PiotrKu\CustomTablesCrud\Models;
 
-	// use PiotrKu\CustomTablesCrud\Plugin;
-	use PiotrKu\CustomTablesCrud\Database\Connection;
+	use PiotrKu\CustomTablesCrud\Plugin;
+	// use PiotrKu\CustomTablesCrud\Database\Connection;
 
 
 	class TableStructureLoader// extends Plugin
@@ -20,7 +20,7 @@
 			$this->tables = ['test'];
 
 			// Setup database connection
-			$this->db = new Connection();
+			// $this->db = new Connection();
 		}
 
 		public static function getElems(){

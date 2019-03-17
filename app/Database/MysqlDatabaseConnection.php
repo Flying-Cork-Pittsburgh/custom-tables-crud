@@ -2,46 +2,22 @@
 
 	namespace PiotrKu\CustomTablesCrud\Database;
 
-	// use PiotrKu\CustomTablesCrud\Plugin;
 	use PiotrKu\CustomTablesCrud\Database\DatabaseConnection;
+	use PiotrKu\CustomTablesCrud\Database\QueryParametersTool;
 
 
 	// The implementation we're currently using.
 	final class MysqlDatabaseConnection implements DatabaseConnection
 	{
-	// 	public function query( ...$args ) {
-	// 		// Execute query and return results.
-	// 	}
-	// }
 
-
-	// class MysqlDBConnection
-	// {
-
-		// protected static $db			= NULL;
 		protected $dbh;
-		// private $instance;
 
 		public function __construct()
 		{
 			\write_log('init MysqlDBConnection __construct');
 
-			// self::$db = [
-			// 	'prefix'		=> $GLOBALS['table_prefix'],
-			// ];
-
 			NULL === $this->dbh && $this->connect();
 		}
-
-
-		// public static function getInstance()
-		// {
-		// 	if (!isset(self::$instance)) {
-		// 		self::$instance = new self();
-		// 	}
-		// 	return self::$instance;
-		// }
-
 
 		public function connect()
 		{
@@ -59,7 +35,22 @@
 		// }
 
 		public function query( ...$args ) {
+			return 'query results here';
 			// Execute query and return results.
 		}
 
+		public function fetchAll($table, ...$args) {
+
+			$cols = QueryParametersTool::getAllowedCols($table);
+
+			try {
+				$stmt = $this->dbh->prepare("SELECT ".  implode(', ', $cols) . " FROM " . $table . " LIMIT 6");
+				$stmt->execute();
+				$result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+			} catch (PDOException $e) {
+				echo 'Action failed: ' . $e->getMessage();
+			}
+
+			return $result;
+		}
 	}

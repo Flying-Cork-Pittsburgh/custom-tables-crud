@@ -3,16 +3,13 @@
 	namespace PiotrKu\CustomTablesCrud\Controllers;
 
 	use PiotrKu\CustomTablesCrud\Plugin;
-	use PiotrKu\CustomTablesCrud\Models\TableStructureLoader;
+	use PiotrKu\CustomTablesCrud\Models\TableDataGetter;
+	use PiotrKu\CustomTablesCrud\Controllers\Core;
 
 
-	class Index// extends Plugin
+	class Index extends Core
 	{
-		/**
-		 * @var array Shortcode class name to register
-		 * @since 0.4.0
-		 */
-		protected $tables;
+		// protected $tables;
 		// protected $db;
 
 		public function __construct()
@@ -22,21 +19,22 @@
 
 		public static function renderPage($table)
 		{
+			$items = TableDataGetter::getElems($table);
 
 			// include(/home/vagrant/code/budio/cms/wp-content/plugins/custom-tables-crud/app/Views/views/wholesaler_prods.php):
-			$pluginDir = Plugin::getConfig('pluginDir');
+			$pluginDir		= Plugin::getConfig('pluginDir');
+			$tablesConfig 	= Plugin::getConfig('tables');
 
-			$viewData = [
-				'table' =>	$table,
+			if (empty($tablesConfig[$table])) die('config for table not found, exiting...');
+
+
+			$vData = [
+				'pageTitle'		=>	$tablesConfig[$table]['pageTitle'] ?? '-',
+				'table'			=>	$table,
+				'tableFields'	=>	$tablesConfig[$table]['fields'],
+				'items'			=>	$items,
 			];
-			include($pluginDir.'/views/table__index.php');
-			// die(' / test');
-		}
 
-		public function getElems()
-		{
-			$elems = TableStructureLoader::getElems();
-
-			return $elems;
+			include $pluginDir.'/views/table__index.php';
 		}
 	}
