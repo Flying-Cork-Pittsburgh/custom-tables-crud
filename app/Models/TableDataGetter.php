@@ -12,10 +12,18 @@
 		{
 		}
 
-		public static function getElems($table)
+		public static function getElems($table, $limit = null, $offset = null)
 		{
 			$connection = Plugin::getConfig('connection');
-			$results = $connection->fetchAll($table);
+			$results = $connection->fetchAll($table, $limit, $offset);
+
+			return $results;
+		}
+
+		public static function countElems($table)
+		{
+			$connection = Plugin::getConfig('connection');
+			$results = $connection->countAll($table);
 
 			return $results;
 		}

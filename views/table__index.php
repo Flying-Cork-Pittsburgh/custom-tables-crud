@@ -47,6 +47,7 @@
 				</div>
 				*/
 			?>
+			<br>///<?= $pagination ?>///<br>
 			<h2 class="screen-reader-text">Nawigacja listy wpisów</h2>
 			<div class="tablenav-pages"><span class="displaying-num">7 pozycji</span>
 				<span class="pagination-links"><span class="tablenav-pages-navspan" aria-hidden="true">«</span>

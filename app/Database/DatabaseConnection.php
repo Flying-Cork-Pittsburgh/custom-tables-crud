@@ -10,4 +10,5 @@
 		public function connect();
 		public function query(...$args);
 		public function fetchAll($table, ...$args);
+		public function countAll($table);
 	}

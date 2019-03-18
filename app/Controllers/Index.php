@@ -4,7 +4,8 @@
 
 	use PiotrKu\CustomTablesCrud\Plugin;
 	use PiotrKu\CustomTablesCrud\Models\TableDataGetter;
-	use PiotrKu\CustomTablesCrud\Controllers\Core;
+	use PiotrKu\CustomTablesCrud\Models\Paginator;
+	// use PiotrKu\CustomTablesCrud\Controllers\Core;
 
 
 	class Index extends Core
@@ -19,9 +20,11 @@
 
 		public static function renderPage($table)
 		{
-			$items = TableDataGetter::getElems($table);
+			$items = TableDataGetter::getElems($table, 5, intval($_GET['paged'] ?? 1));
 
-			// include(/home/vagrant/code/budio/cms/wp-content/plugins/custom-tables-crud/app/Views/views/wholesaler_prods.php):
+			$paginator = new Paginator($table);		// should be by query not just $table
+			$pagination = $paginator->paginate();
+
 			$pluginDir		= Plugin::getConfig('pluginDir');
 			$tablesConfig 	= Plugin::getConfig('tables');
 
@@ -33,6 +36,7 @@
 				'table'			=>	$table,
 				'tableFields'	=>	$tablesConfig[$table]['fields'],
 				'items'			=>	$items,
+				'pagination'	=> $pagination,
 			];
 
 			include $pluginDir.'/views/table__index.php';

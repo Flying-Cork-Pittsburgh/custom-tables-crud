@@ -25,6 +25,8 @@
 		 */
 		public function addMenuPages()
 		{
+			if (!function_exists('add_menu_page')) return;	// prevent runtime errors when user not logged in
+
 			foreach (Plugin::getConfig('tables') as $tableName => $table)
 			{
 				$table['pageSlug'] = Plugin::getConfig('prefix').'_'.$tableName;
