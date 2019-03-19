@@ -46,22 +46,40 @@
 					<input type="submit" name="filter_action" id="post-query-submit" class="button" value="Przefiltruj">
 				</div>
 				*/
+
 			?>
-			<br>///<?= $pagination ?>///<br>
-			<h2 class="screen-reader-text">Nawigacja listy wpisów</h2>
-			<div class="tablenav-pages"><span class="displaying-num">7 pozycji</span>
-				<span class="pagination-links"><span class="tablenav-pages-navspan" aria-hidden="true">«</span>
-				<span class="tablenav-pages-navspan" aria-hidden="true">‹</span>
-				<span class="paging-input"><label for="current-page-selector" class="screen-reader-text">Bieżąca strona</label><input class="current-page" id="current-page-selector" type="text" name="paged" value="1" size="1" aria-describedby="table-paging"><span class="tablenav-paging-text"> z <span class="total-pages">2</span></span></span>
-				<a class="next-page" href="http://budio.test/wp-admin/edit.php?post_type=producers&amp;mode=list&amp;paged=2"><span class="screen-reader-text">Następna strona</span><span aria-hidden="true">›</span></a>
-				<span class="tablenav-pages-navspan" aria-hidden="true">»</span></span>
+
+			<div class="tablenav-pages">
+				<span class="displaying-num"><?= $paginator->totalItems() ?> pozycji</span>
+				<span class="pagination-links">
+					<?= $paginator->pagination() ?>
+				</span>
 			</div>
+			<?php /*<br class="clear">
+			<h2 class="screen-reader-text">Nawigacja listy wpisów</h2>
+			<div class="tablenav-pages">
+				<span class="displaying-num">7 pozycji</span>
+				<span class="pagination-links">
+					<span class="tablenav-pages-navspan" aria-hidden="true">«</span>
+					<span class="tablenav-pages-navspan" aria-hidden="true">‹</span>
+					<span class="paging-input">
+						<label for="current-page-selector" class="screen-reader-text">Bieżąca strona</label>
+						<input class="current-page" id="current-page-selector" type="text" name="paged" value="1" size="1" aria-describedby="table-paging">
+						<span class="tablenav-paging-text"> z <span class="total-pages">2</span></span>
+					</span>
+					<a class="next-page" href="http://budio.test/wp-admin/edit.php?post_type=producers&amp;mode=list&amp;paged=2">
+						<span class="screen-reader-text">Następna strona</span>
+						<span aria-hidden="true">›</span>
+					</a>
+					<span class="tablenav-pages-navspan" aria-hidden="true">»</span>
+				</span>
+			</div>*/ ?>
 			<br class="clear">
 		</div>
 
 
 		<h2 class="screen-reader-text">Lista wpisów</h2>
-		<table class="wp-list-table widefat fixed striped posts">
+		<table class="wp-list-table widefat fixeddd striped posts">
 			<thead>
 				<tr>
 					<?php /*
@@ -127,8 +145,8 @@
 				<?php foreach ($items as $item): ?>
 					<tr id="post-<?= key($item) ?>" class="iedit author-other level-0 status-publish has-post-thumbnail hentry">
 						<?php foreach ($item as $ckey => $cval): ?>
-							<td class="date column-<?= $ckey ?>" data-colname="<?= $ckey ?>">
-								<?= $cval ?><br>
+							<td class="date column-<?= $ckey ?>" data-colname="<?= $ckey ?>" contenteditable="<?= $editable_fields[$ckey] ? 'true' : 'false' ?>">
+								<?= $cval ?>
 							</td>
 						<?php endforeach ?>
 					</tr>

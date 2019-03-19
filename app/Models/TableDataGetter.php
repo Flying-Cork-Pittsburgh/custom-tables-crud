@@ -12,13 +12,15 @@
 		{
 		}
 
-		public static function getElems($table, $limit = null, $offset = null)
+
+		public static function getElems($table, $limit = null, $offset = null, $order = null)
 		{
 			$connection = Plugin::getConfig('connection');
-			$results = $connection->fetchAll($table, $limit, $offset);
+			$results = $connection->fetchAll($table, $limit, $offset, $order);
 
 			return $results;
 		}
+
 
 		public static function countElems($table)
 		{
@@ -26,5 +28,19 @@
 			$results = $connection->countAll($table);
 
 			return $results;
+		}
+
+
+		public static function countQueryResults($query)
+		{
+			$connection = Plugin::getConfig('connection');
+			$results = $connection->countQueryResults($query);
+
+			return $results;
+		}
+
+		public function isFieldEditable($table, $field)
+		{
+			# code...
 		}
 	}

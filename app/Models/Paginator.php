@@ -36,7 +36,7 @@ class Paginator
 	public $paging_var 	= 'paged';	#String for link to go before the page number
 	public $link_prefix	= '?paged='; #String for link to go before the page number
 	public $link_suffix	= ''; #String for link to go after the page number
-	public $page_nums_separator = ' | '; #String to go between the page number links
+	public $page_nums_separator = ' '; #String to go between the page number links
 
 	################################
 	# ERROR HOLDING VAR #
@@ -46,14 +46,22 @@ class Paginator
 	################################
 	# PAGINATION TEMPLATE DEFAULTS #
 	################################
-	public $tpl_first = '<a href="{link}">&laquo;</a> | ';
-	public $tpl_last = ' | <a href="{link}">&raquo;</a> ';
+	public $tpl_first = ' <a class="first-page" href="{link}"><span class="screen-reader-text">Pierwsza strona</span>
+	<span aria-hidden="true">«</span></a> ';
 
-	public $tpl_prev = '<a href="{link}">&lsaquo;</a> | ';
-	public $tpl_next = ' | <a href="{link}">&rsaquo;</a> ';
+	public $tpl_prev = ' <a class="prev-page" href="{link}"><span class="screen-reader-text">Poprzednia strona</span>
+	<span aria-hidden="true">‹</span></a> ';
 
-	public $tpl_page_nums = '<span><a href="{link}">{page}</a></span>';
-	public $tpl_cur_page_num = '<span>{page}</span>';
+	public $tpl_next = ' <a class="next-page" href="{link}"><span class="screen-reader-text">Następna strona</span>
+	<span aria-hidden="true">›</span></a> ';
+
+	public $tpl_last = ' <a class="last-page" href="{link}"><span class="screen-reader-text">Ostatnia strona</span>
+	<span aria-hidden="true">»</span></a> ';
+
+	public $tpl_page_nums = ' <a class="next-page" href="{link}"><span class="screen-reader-text">Strona</span>
+	<span aria-hidden="true" class="current-page">{page}</span></a> ';
+
+	public $tpl_cur_page_num = ' <span class="paging-input"><label for="current-page-selector" class="screen-reader-text">Bieżąca strona</label><input class="current-page" id="current-page-selector" type="text" name="paged" value="{page}" size="1" aria-describedby="table-paging"><span class="tablenav-paging-text"> z <span class="total-pages">{all}</span></span></span> ';
 
 	/**
 	 * In the above templates {link} is where the link will be inserted and {page} is
@@ -68,21 +76,25 @@ class Paginator
 
 	##################################################################################
 
-	public function __construct($table, $page = null, $query = '')
+	public function __construct($query, $perPage = 5, $page = null)
 	{
-		if (empty($table)) return false;
+		if (empty($query)) return false;
 
 		if (null === $page) {
-			$page = intval($_GET[$this->paging_var]) ?? 1;
+			$page = empty($_GET[$this->paging_var]) ? 1 : intval($_GET[$this->paging_var]);
 		}
+
+		$this->results_per_page = max(5, intval($perPage));
 
 		#Check page number is a positive integer greater than 0 and assign it to $this->_current_page
 		if ((int)$page > 0) $this->_current_page = (int)$page;
 
-		$this->_table = $table;
+		// $this->_table = $table;
 		$this->_query = $query;
 
 		$this->_db = Plugin::getConfig('connection');
+
+		$this->paginate();
 	}
 
 	/**
@@ -97,7 +109,7 @@ class Paginator
 	{
 		$output = '';
 
-		$this->total_results = TableDataGetter::countElems($this->_table);
+		$this->total_results = TableDataGetter::countQueryResults($this->_query);
 		$this->total_pages = ceil($this->total_results / $this->results_per_page);
 
 		################################
@@ -119,25 +131,26 @@ class Paginator
 		# SET FIRST AND LAST PAGE VALUES AND #
 		# ERROR CHECK AGAINST INVALID VALUES #
 		######################################
-		$start = ($this->_current_page - $this->_padding > 0) ? $this->_current_page - $this->
-				_padding : '1';
-		$finish = ($this->_current_page + $this->_padding <= $this->total_pages) ? $this->
-				_current_page + $this->_padding : $this->total_pages;
+		$start = ($this->_current_page - $this->_padding > 0) ? $this->_current_page - $this->_padding : '1';
+		$finish = ($this->_current_page + $this->_padding <= $this->total_pages) ? $this->_current_page + $this->_padding : $this->total_pages;
+
 
 		###########################################
 		# ADD FIRST TO OUTPUT IF CURRENT PAGE > 1 #
 		###########################################
-		if ($this->_current_page > 1) {
-				$output .= preg_replace('/\{link\}/i', $this->link_prefix . '1' . $this->
-					link_suffix, $this->tpl_first);
+		if ($this->_current_page > 1)
+		{
+			$new_get_vars = $this->prepareNewGetVars($_GET, $this->paging_var, 1);
+			$output .= preg_replace('/\{link\}/i', '?' . implode('&', $new_get_vars), $this->tpl_first);
 		}
 
 		##########################################
 		# ADD PREV TO OUTPUT IF CURRENT PAGE > 1 #
 		##########################################
-		if ($this->_current_page > 1) {
-				$output .= preg_replace('/\{link\}/i', $this->link_prefix . ($this->
-					_current_page - 1) . $this->link_suffix, $this->tpl_prev);
+		if ($this->_current_page > 1)
+		{
+			$new_get_vars = $this->prepareNewGetVars($_GET, $this->paging_var, $this->_current_page - 1);
+			$output .= preg_replace('/\{link\}/i', '?' . implode('&', $new_get_vars), $this->tpl_prev);
 		}
 
 		################################################
@@ -146,25 +159,18 @@ class Paginator
 		$nums = array();
 		for ($i = $start; $i <= $finish; $i++)
 		{
-			if ($i == $this->_current_page) {
-				$nums[] = preg_replace('/\{page\}/i', $i, $this->tpl_cur_page_num);
-			} else {
-				$get_vars = $_GET;
-				$get_vars[$this->paging_var] = $i;
+			if ($i == $this->_current_page)
+			{
+				$patterns = array('/\{all\}/i', '/\{page\}/i');
+				$replaces = array($this->totalPages(), $i);
 
+				$nums[] = preg_replace($patterns, $replaces, $this->tpl_cur_page_num);
+			}
+			else
+			{
 				$patterns = array('/\{link\}/i', '/\{page\}/i');
-				// $replaces = array($this->link_prefix . $i . $this->link_suffix, $i);
 
-				$paging_var = $this->paging_var;
-				$new_get_vars = array_map(function($k, $v) use ($paging_var, $i) {
-					// echo "tset";
-					if ($k !== $paging_var) {
-						return "{$k}={$v}";
-					} else {
-						return "{$k}={$i}";
-					}
-				}, array_keys($get_vars), $get_vars);
-
+				$new_get_vars = $this->prepareNewGetVars($_GET, $this->paging_var, $i);
 				$replaces = array('?' . implode('&', $new_get_vars), $i);
 
 				$nums[] = preg_replace($patterns, $replaces, $this->tpl_page_nums);
@@ -175,20 +181,57 @@ class Paginator
 		##################################################
 		# ADD NEXT TO OUTPUT IF CURRENT PAGE < MAX PAGES #
 		##################################################
-		if ($this->_current_page < $this->total_pages) {
-				$output .= preg_replace('/\{link\}/i', $this->link_prefix . ($this->
-					_current_page + 1) . $this->link_suffix, $this->tpl_next);
+		if ($this->_current_page < $this->total_pages)
+		{
+			$new_get_vars = $this->prepareNewGetVars($_GET, $this->paging_var, $this->_current_page + 1);
+			$output .= preg_replace('/\{link\}/i', '?' . implode('&', $new_get_vars), $this->tpl_next);
 		}
 
 		############################################
 		# ADD LAST TO OUTPUT IF FINISH < MAX PAGES #
 		############################################
-		if ($this->_current_page < $finish) {
-				$output .= preg_replace('/\{link\}/i', $this->link_prefix . $this->total_pages, $this->
-					tpl_last);
+		if ($this->_current_page < $finish)
+		{
+			$new_get_vars = $this->prepareNewGetVars($_GET, $this->paging_var, $this->total_pages);
+			$output .= preg_replace('/\{link\}/i', '?' . implode('&', $new_get_vars), $this->tpl_last);
 		}
 
 		$this->_output = $output;
-		return $output;
+	}
+
+	/**
+	 * 	$get_vars		- values from $_GET
+	 * 	$paging_var		- name of the parameter responsible for current page number 'paged'
+	 * 	$i					- value of the 'paged' variable to be set
+	 */
+	public function prepareNewGetVars($get_vars, $paging_var, $i)
+	{
+		if (empty($get_vars[$this->paging_var])) $get_vars[$this->paging_var] = 1;
+
+		return array_map(function($k, $v) use ($paging_var, $i) {
+			if ($k !== $paging_var) {
+				return "{$k}={$v}";
+			} else {
+				return "{$k}={$i}";
+			}
+		}, array_keys($get_vars), $get_vars);
+	}
+
+
+	public function pagination()
+	{
+		return $this->_output;
+	}
+
+
+	public function totalPages()
+	{
+		return $this->total_pages;
+	}
+
+
+	public function totalItems()
+	{
+		return $this->total_results;
 	}
 }

@@ -3,7 +3,7 @@
 	namespace PiotrKu\CustomTablesCrud\Database;
 
 	use PiotrKu\CustomTablesCrud\Database\DatabaseConnection;
-	use PiotrKu\CustomTablesCrud\Database\QueryParametersTool;
+	use PiotrKu\CustomTablesCrud\Database\QueryPrepareTool;
 
 
 	// The implementation we're currently using.
@@ -24,6 +24,8 @@
 			try {
 				$dbh = new \PDO("mysql:host=".DB_HOST.";dbname=".DB_NAME.';charset=utf8', DB_USER, DB_PASSWORD);
 				$this->dbh = $dbh;
+
+				$this->dbh->setAttribute( \PDO::ATTR_ERRMODE, \PDO::ERRMODE_WARNING );
 			} catch (PDOException $e) {
 				echo 'Connection failed: ' . $e->getMessage();
 			}
@@ -41,14 +43,26 @@
 		}
 
 
-		public function fetchAll($table, $limit = null, $offset = null, ...$args)
+		public function fetchAll($table, $limit = null, $offset = null, $order = null, ...$args)
 		{
-			$cols = QueryParametersTool::getAllowedCols($table);
+			$cols = QueryPrepareTool::getAllowedCols($table);
+			$where = QueryPrepareTool::getWhereFilter($table);
+			$where = $where ? " {$where} " : " 1 = 1 ";
+
+			$orderby = preg_replace('/[^a-z0-9_]/', '', $order['orderby']);
+			$orderdir = in_array($order['order'], ['ASC', 'DESC']) ? $order['order'] : 'ASC';
+			$order = $order && !empty($order['order']) ? " ORDER BY {$orderby} {$orderdir} " : '';
 
 			$offsetLimit = $this->prepareLimitString($limit, $offset);
 
 			try {
-				$stmt = $this->dbh->prepare("SELECT ".  implode(', ', $cols) . " FROM " . $table . " {$offsetLimit}");
+				$SQL = "SELECT ".  implode(', ', $cols) .
+								" FROM {$table} " .
+								" WHERE {$where} " .
+								$order .
+								" {$offsetLimit}";
+
+				$stmt = $this->dbh->prepare($SQL);
 				$stmt->execute();
 				$result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 			} catch (PDOException $e) {
@@ -74,10 +88,24 @@
 
 		public function countAll($table)
 		{
-			$cols = QueryParametersTool::getAllowedCols($table);
+			$cols = QueryPrepareTool::getAllowedCols($table);
 
 			try {
 				$stmt = $this->dbh->prepare("SELECT COUNT(".  $cols[0] . ") AS cnt FROM " . $table);
+				$stmt->execute();
+				$result = $stmt->fetchColumn();
+			} catch (PDOException $e) {
+				echo 'Action failed: ' . $e->getMessage();
+			}
+
+			return $result;
+		}
+
+
+		public function countQueryResults($query)
+		{
+			try {
+				$stmt = $this->dbh->prepare($query);
 				$stmt->execute();
 				$result = $stmt->fetchColumn();
 			} catch (PDOException $e) {
@@ -92,7 +120,7 @@
 		{
 			if (null === $limit) return '';
 
-			$limit	= intval($limit);
+			$limit = intval($limit);
 
 			if ($limit && $offset !== null) {
 				$offset = intval($offset);
