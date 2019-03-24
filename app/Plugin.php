@@ -350,5 +350,25 @@
 		}
 
 
+		public static function tableExists($table_name)
+		{
+			foreach (self::getConfig('tables') as $table => $foo)
+			{
+				if ($table_name === $table) return true;
+			}
+
+			return;
+		}
+
+
+		public static function getFieldInfo($table_name, $field_name)
+		{
+			if (empty(self::getConfig('tables')[$table_name]['fields'])) return;
+			if (empty(self::getConfig('tables')[$table_name]['fields'][$field_name])) return;
+
+			return self::getConfig('tables')[$table_name]['fields'][$field_name];
+		}
+
+
 
 	}

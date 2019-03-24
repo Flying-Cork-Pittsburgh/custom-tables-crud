@@ -3,10 +3,15 @@
 	namespace PiotrKu\CustomTablesCrud;
 
 	use PiotrKu\CustomTablesCrud\Plugin;
+	use PiotrKu\CustomTablesCrud\Validation\Validator;
 
 
 	class AjaxHandler
 	{
+		private $_data		= '';
+		private $_table	= '';
+		private $_id		= '';
+
 		function __construct()
 		{
 			add_action('wp_ajax_ctcrud_field_update', [$this, 'handleFieldUpdateRequest']);
@@ -18,14 +23,59 @@
 			// read raw ajax request fron axios
 			$data = json_decode(file_get_contents("php://input"), true);
 
-			$data = $this->initialDataParsing($data);
-			echo '<pre>';
-			print_r($data);
-			echo '</pre>';
-			die('');
+			$this->_data = $this->initialDataParsing($data);
 
-			return ' here\'s ajax backeng handler';
+			$this->_table	= $this->getRequestedTable();
+			$this->_field	= $this->getRequestedField();
+			$this->_id		= $this->getRequestedId();
+			$this->_value	= $this->_data['value'];
+
+			$validator = new Validator();
+			$this->_value = $validator->validateFieldValue($this->_field, $this->_value);
+
+			if (null === $this->_value) wp_send_json_error('Invalid field value');
+
+			$dbh = Plugin::getConfig('connection');
+			$dbh->updateField($table, $field, $value);
+
+			die('died');
+
+			return ' here\'s ajax backend handler';
 		}
+
+
+		public function getRequestedTable()
+		{
+			if (empty($this->_data['page'])) wp_send_json_error('Table unknown');
+
+			$table_name = str_replace(Plugin::getConfig('prefix') . '_', '', $this->_data['page']);
+
+			if (Plugin::tableExists($table_name)) return $table_name;
+
+			wp_send_json_error('Table does not exist');
+		}
+
+
+		public function getRequestedField()
+		{
+			if (empty($this->_data['field'])) wp_send_json_error('Field unknown');
+
+			$field_info = Plugin::getFieldInfo($this->_table, $this->_data['field']);
+
+			if ($field_info) return $field_info;
+
+			wp_send_json_error('Field does not exist');
+		}
+
+
+		public function getRequestedId()
+		{
+			if (empty($this->_data['id'])) wp_send_json_error('Id unknown');
+			if (!intval($this->_data['id']) || intval($this->_data['id']) <= 0) wp_send_json_error('Id invalid');
+
+			return intval($this->_data['id']);
+		}
+
 
 
 		public function initialDataParsing($data)

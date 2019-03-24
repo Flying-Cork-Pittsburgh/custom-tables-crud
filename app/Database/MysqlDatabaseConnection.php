@@ -73,6 +73,12 @@
 		}
 
 
+		public function updateField($table, $field, $value)
+		{
+
+		}
+
+
 		public function countRowsInQuery($query)
 		{
 			try {
