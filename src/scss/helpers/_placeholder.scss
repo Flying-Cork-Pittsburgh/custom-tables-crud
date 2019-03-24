@@ -1,0 +1,56 @@
+/* Example of use is at the bottom of file */
+
+@mixin placeholder() {
+
+  &::-webkit-input-placeholder {
+    @content;
+  }
+
+  &::-moz-placeholder {
+    @content;
+  }
+
+  &:-ms-input-placeholder {
+    @content;
+  }
+
+  &:-moz-placeholder {
+    @content;
+  }
+}
+
+/*
+
+  Example:
+
+    input {
+      color: $c-black;
+
+      @include placeholder() {
+        color: $c-black;
+      }
+    }
+
+  Result:
+
+    input {
+      color: $c-black;
+    }
+
+    input::-webkit-input-placeholder {
+      color: $c-black;
+    }
+
+    input::-moz-placeholder {
+      color: $c-black;
+    }
+
+    input:-ms-input-placeholder {
+      color: $c-black;
+    }
+
+    input:-moz-placeholder {
+      color: $c-black;
+    }
+
+*/

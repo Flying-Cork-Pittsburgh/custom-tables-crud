@@ -9,6 +9,7 @@
 	use PiotrKu\CustomTablesCrud\Views\MenuLinksProvider;
 	// use PiotrKu\CustomTablesCrud\Database\DatabaseConnection;
 	use PiotrKu\CustomTablesCrud\Database\DatabaseConnectionFactory;
+	use PiotrKu\CustomTablesCrud\AjaxHandler;
 
 
 	class Plugin {
@@ -235,6 +236,9 @@
 			$menuLinksProvider = new MenuLinksProvider();
 			$menuLinksProvider->addMenuPages();
 			$this->setConfig('menuLinks', $menuLinksProvider->getMenuLinks());
+
+			// Setup Ajax hook(s)
+			new AjaxHandler();
 
 			// echo 'test';
 			// Setup Admin page

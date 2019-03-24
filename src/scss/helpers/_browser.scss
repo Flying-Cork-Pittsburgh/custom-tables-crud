@@ -1,0 +1,92 @@
+/* Example of use is at the bottom of file */
+
+@mixin browser($browser) {
+
+  @if ($browser == webkit) {
+
+    /* Chrome, Safari, Opera */
+
+    body:nth-of-type(1) & {
+      @content;
+    }
+
+  }
+
+  @elseif ($browser == safari) {
+
+    /* >= Safari 7.1 */
+
+    @at-root _::-webkit-full-page-media, _:future, :root & {
+      @content;
+    }
+
+  }
+
+  @elseif ($browser == ie) {
+
+    /* >= Internet Explorer 9 */
+
+    @media screen and (min-width:0\0) {
+      @content;
+    }
+
+  }
+
+  @elseif ($browser == edge) {
+
+    /* >= Edge 12 */
+
+    _:-ms-lang(x), _:-webkit-full-screen, & {
+      @content;
+    }
+
+  }
+
+  @elseif ($browser == firefox) {
+
+    @-moz-document url-prefix() {
+      @content;
+    }
+
+  }
+
+  @elseif ($browser == iphone) {
+
+    @media only screen and (max-device-width: 736px) and (-webkit-min-device-pixel-ratio: 2) {
+      @content;
+    }
+
+  }
+
+}
+
+/*
+
+  Example:
+
+    div {
+      background-attachment: fixed;
+
+      @include browser('ie') {
+        background-position: center;
+        background-size: cover;
+        background-attachment: scroll;
+      }
+    }
+
+  Result:
+
+    div {
+      background-attachment: fixed;
+    }
+
+    @media screen and (min-width:0\0) {
+
+      div {
+        background-position: center;
+        background-size: cover;
+        background-attachment: scroll;
+      }
+    }
+
+*/

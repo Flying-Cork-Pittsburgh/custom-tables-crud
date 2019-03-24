@@ -1,0 +1,82 @@
+/* Example of use is at the bottom of file */
+
+@mixin parent($element, $modifiers) {
+
+  $modifiers : explode($modifiers, ' || ');
+
+  @each $modifier in $modifiers {
+
+    $selectors : '' + inspect(&) + '';
+    $selectors : str-replace($selectors, '(', '');
+    $selectors : str-replace($selectors, ',)', '');
+    $selectors : explode($selectors, ',');
+
+    @each $selector in $selectors {
+
+      $selector : $selector + ' ';
+      $parent   : $element + ' ';
+      $check    : str-index($selector, $parent);
+
+      @if ($check) {
+
+        $selector : str-insert($selector, $modifier, ($check + str-length($parent) - 1)); 
+
+        @at-root #{$selector} {
+          @content;
+        }
+
+      } @else {
+
+        #{$element}#{$modifier} #{"&"} {
+          @content;
+        }
+
+      }
+
+    }
+
+  }
+
+}
+
+/*
+
+  Example:
+
+    ul {
+
+      li {
+
+        span {
+          color: green;
+
+          @include parent('li', '.red') {
+            color: red;
+          }
+
+          @include parent('ul', '.hide || .hidden') {
+            display: none;
+          }
+        }
+      }
+    }
+
+  Result:
+
+    ul li span {
+      color: green;
+    }
+
+    ul li.red span {
+      color: red;
+    }
+
+    ul.hide li span {
+      display: none;
+    }
+
+    ul.hidden li span {
+      display: none;
+    }
+
+*/

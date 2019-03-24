@@ -1,0 +1,86 @@
+$breakpoints-down: (
+	'phone':            '(max-width:  360px)',
+	'large-phone':      '(max-width:  480px)',
+	'small-tablet':     '(max-width:  600px)',
+	'tablet':           '(max-width:  768px)',
+	'large-tablet':     '(max-width: 1024px)',
+	'laptop':           '(max-width: 1280px)',
+	// 'laptop-h':         '(max-width: 1280px)',
+	'large-laptop':     '(max-width: 1366px)',
+	'ultra':            '(max-width: 1600px)',
+);
+
+$breakpoints-up: (
+	'phone':            '(min-width:  361px)',
+	'large-phone':      '(min-width:  481px)',
+	'small-tablet':     '(min-width:  601px)',
+	'tablet':           '(min-width:  769px)',
+	'large-tablet':     '(min-width: 1025px)',
+	'laptop':           '(min-width: 1281px)',
+	'large-laptop':     '(min-width: 1367px)',
+	'ultra':            '(min-width: 1599px)',
+);
+
+@mixin rwd($breakpoint, $breakpoint-up: false) {
+	@if ($breakpoint-up != false) {
+		@if map-has-key($breakpoints-up, $breakpoint) {
+			@media #{inspect(map-get($breakpoints-up, $breakpoint))} {
+				@content;
+			}
+		} @else {
+			@warn 'Unfortunately, not found breakpoint called `#{$breakpoint}`!';
+		}
+	} @else {
+		@if map-has-key($breakpoints-down, $breakpoint) {
+			@media #{inspect(map-get($breakpoints-down, $breakpoint))} {
+				@content;
+			}
+		} @else {
+			@warn 'Unfortunately, not found breakpoint called `#{$breakpoint}`!';
+		}
+	}
+}
+
+/*!
+
+	Example:
+
+		ul {
+			margin-bottom: 15px;
+
+			@include rwd(tablet, true) {
+				margin-bottom: 30px;
+			}
+
+			li {
+				margin-bottom: 20px;
+
+				@include rwd(tablet) {
+					margin-bottom: 10px;
+				}
+			}
+		}
+
+	Result:
+
+		ul {
+			margin-bottom: 15px;
+		}
+
+		ul li {
+			margin-bottom: 20px;
+		}
+
+		@media (min-width: 769px) {
+			ul {
+				margin-bottom: 30px;
+			}
+		}
+
+		@media (max-width: 768px) {
+			ul li {
+				margin-bottom: 10px;
+			}
+		}
+
+*/

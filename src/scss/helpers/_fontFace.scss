@@ -1,0 +1,101 @@
+
+// Sample file name:
+
+// 	• OpenSans-Bold.ttf
+// 	• [prefix][delimiter][font_weight].ttf
+
+
+// Mixin args:
+
+// 	• path
+// 	• font family
+// 	• prefix (prefix in file names)
+// 	• delimiter (delimiter in file names)
+// 	• fonts weights:
+
+// 		• name (font_weight in file names)
+// 		• weight
+// 		• style
+
+// 	• woff2 file exists (optionally)
+
+
+// Example:
+
+// 	$font : (
+// 		(
+// 			'name'   : 'Regular',
+// 			'weight' : 400,
+// 			'style'  : 'normal'
+// 		),
+// 		(
+// 			'name'   : 'Medium',
+// 			'weight' : 500,
+// 			'style'  : 'normal'
+// 		),
+// 		(
+// 			'name'   : 'Bold',
+// 			'weight' : 700,
+// 			'style'  : 'normal'
+// 		)
+// 	);
+
+// 	@include font-face('../sources/fonts/font/', 'My Font', 'MyFont', '-', $font, true);
+
+
+@mixin font-face($url, $fontFamily, $prefix, $delimiter, $fonts, $woff2: false) {
+
+	$woff2Line : '';
+
+	@if (type-of($fonts) == 'list') {
+
+		@each $font in $fonts {
+
+			@if ($woff2) {
+
+				$woff2Line : 'url(#{$url}#{$prefix}#{$delimiter}#{inspect(map-get($font, 'name'))}.woff2) format(\'woff2\'),';
+
+			}
+
+			@font-face {
+				font-family: $fontFamily;
+				//src: url('#{$url}#{$prefix}#{$delimiter}#{inspect(map-get($font, 'name'))}.eot');
+				src:
+					//url('#{$url}#{$prefix}#{$delimiter}#{inspect(map-get($font, 'name'))}.eot?#iefix') format('embedded-opentype'),
+					#{$woff2Line}
+					url('#{$url}#{$prefix}#{$delimiter}#{inspect(map-get($font, 'name'))}.woff') format('woff');
+					//url('#{$url}#{$prefix}#{$delimiter}#{inspect(map-get($font, 'name'))}.ttf') format('truetype');
+					//url('#{$url}#{$prefix}#{$delimiter}#{inspect(map-get($font, 'name'))}.ttf') format('truetype'),
+					//url('#{$url}#{$prefix}#{$delimiter}#{inspect(map-get($font, 'name'))}.svg#{$prefix}#{$delimiter}#{inspect(map-get($font, 'name'))}') format('svg');
+				font-weight: #{inspect(map-get($font, 'weight'))};
+				font-style: #{inspect(map-get($font, 'style'))};
+				font-display: swap;
+			}
+
+		}
+
+	} @else {
+
+		@if ($woff2) {
+
+			$woff2Line: 'url(#{$url}#{$prefix}#{$delimiter}#{map-get($fonts, 'name')}.woff2) format(\'woff2\'),';
+
+		}
+
+		@font-face {
+			font-family: $fontFamily;
+			//src: url('#{$url}#{$prefix}#{$delimiter}#{map-get($fonts, 'name')}.eot');
+			src:
+				//url('#{$url}#{$prefix}#{$delimiter}#{map-get($fonts, 'name')}.eot?#iefix') format('embedded-opentype'),
+				#{$woff2Line}
+				url('#{$url}#{$prefix}#{$delimiter}#{map-get($fonts, 'name')}.woff') format('woff'),
+				url('#{$url}#{$prefix}#{$delimiter}#{map-get($fonts, 'name')}.ttf') format('truetype');
+				//url('#{$url}#{$prefix}#{$delimiter}#{map-get($fonts, 'name')}.ttf') format('truetype'),
+				//url('#{$url}#{$prefix}#{$delimiter}#{map-get($fonts, 'name')}.svg#{$prefix}#{$delimiter}#{map-get($fonts, 'name')}') format('svg');
+			font-weight: #{map-get($fonts, 'weight')};
+			font-style: #{map-get($fonts, 'style')};
+			font-display: swap;
+		}
+	}
+}
+

@@ -10,10 +10,19 @@
     "php_namespace": "PiotrKu\\CustomTablesCrud",
     "prefix": "ctcrud"
   },
+  "main": "index.js",
   "scripts": {
     "translate": "wp-pot --src 'app/**/*.php' --dest-file ./languages/$npm_package_name.pot --package $npm_package_name",
     "zip": "zip -q -r ../$npm_package_name.zip * -x 'node_modules/*' '.git*' './src/*' './.*' './package*.*' './composer.*' './*.md' './*.bak' './bower.json' './gulpfile.js' ",
-    "zip-dev": "zip -q -r ../$npm_package_name.zip * -x 'node_modules/*' '.git*' '.DS_Store' './*.bak' "
+    "zip-dev": "zip -q -r ../$npm_package_name.zip * -x 'node_modules/*' '.git*' '.DS_Store' './*.bak' ",
+    "dev_orig": "NODE_ENV=development webpack --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "watch_orig": "NODE_ENV=development webpack --watch --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "hot_orig": "NODE_ENV=development webpack-dev-server --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "prod_orig": "NODE_ENV=production webpack --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "dev": "SET NODE_ENV=development& webpack --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "watch": "SET NODE_ENV=development& webpack --watch --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "prod": "SET NODE_ENV=production& webpack --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "hot": "SET NODE_ENV=development webpack-dev-server --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js"
   },
   "devDependencies": {
     "del": "^3.0",
@@ -33,13 +42,15 @@
     "gulp-uglify": "^3.0.1",
     "gulp-uglifycss": "^1.1.0",
     "vinyl-paths": "^2.1.0",
-    "wp-pot-cli": "^1.0"
+    "wp-pot-cli": "^1.0",
+    "laravel-mix": "^2.1.14"
   },
   "repository": {
     "type": "git",
     "url": "git://github.com/piotrku/custom-tables-crud"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "gulp-cli": "^2.0.1",
     "node-sass": "^4.11.0"
   }

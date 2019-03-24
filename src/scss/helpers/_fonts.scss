@@ -1,0 +1,67 @@
+$fw-light: 200;
+$fw-regular: 400;
+$fw-medium: 500;
+$fw-semibold: 600;
+$fw-bold: 700;
+
+$mada: (
+	(
+		'name': 'Light',
+		'weight': $fw-light,
+		'style': 'normal'
+	),
+	(
+		'name': 'Regular',
+		'weight': $fw-regular,
+		'style': 'normal'
+	),
+	(
+		'name': 'Medium',
+		'weight': $fw-medium,
+		'style': 'normal'
+	),
+	(
+		'name': 'SemiBold',
+		'weight': $fw-semibold,
+		'style': 'normal'
+	),
+	(
+		'name': 'Bold',
+		'weight': $fw-bold,
+		'style': 'normal'
+	)
+);
+
+@include font-face('../fonts/Mada/', 'Mada', 'Mada', '-', $mada, 1);
+
+
+// $poppins: (
+// 	(
+// 		'name': 'Regular',
+// 		'weight': $fw-regular,
+// 		'style': 'normal'
+// 	),
+// 	(
+// 		'name': 'Medium',
+// 		'weight': $fw-medium,
+// 		'style': 'normal'
+// 	),
+// 	(
+// 		'name': 'Semibold',
+// 		'weight': $fw-semibold,
+// 		'style': 'normal'
+// 	),
+// 	(
+// 		'name': 'Bold',
+// 		'weight': $fw-bold,
+// 		'style': 'normal'
+// 	)
+// );
+
+// @include font-face('../fonts/Poppins/', 'Poppins', 'Poppins', '-', $poppins, 1);
+
+
+$f-main: 'Mada', Tahoma, Arial;
+// $f-roboto: 'Roboto', Tahoma, Arial;
+// $f-poppins: 'Poppins', Tahoma, Arial;
+$fs-base: 1.4rem;

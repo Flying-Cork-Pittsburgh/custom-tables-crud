@@ -143,9 +143,9 @@
 				*/ ?>
 
 				<?php foreach ($items as $item): ?>
-					<tr id="post-<?= key($item) ?>" class="iedit author-other level-0 status-publish has-post-thumbnail hentry">
+					<tr id="post-<?= key($item) ?>" class="iedit author-other level-0 status-publish has-post-thumbnail hentry" data-rowwrapper>
 						<?php foreach ($item as $ckey => $cval): ?>
-							<td class="date column-<?= $ckey ?>" data-colname="<?= $ckey ?>" contenteditable="<?= $editable_fields[$ckey] ? 'true' : 'false' ?>">
+							<td class="date column-<?= $ckey ?>" data-colname="<?= $ckey ?>" contenteditable="<?= $editable_fields[$ckey] ? 'true' : 'false' ?>" <?= $editable_fields[$ckey] ? ' data-rowid="'.$item['id'].'" ' : '' ?>>
 								<?= $cval ?>
 							</td>
 						<?php endforeach ?>
@@ -231,11 +231,10 @@
 								<br class="clear">
 								<div class="inline-edit-group wp-clearfix">
 									<label class="alignleft">
-									<span class="title">Hasło</span>
-									<span class="input-text-wrap"><input type="text" name="post_password" class="inline-edit-password-input" value=""></span>
+										<span class="title">Hasło</span>
+										<span class="input-text-wrap"><input type="text" name="post_password" class="inline-edit-password-input" value=""></span>
 									</label>
-									<em class="alignleft inline-edit-or">
-									–LUB–				</em>
+									<em class="alignleft inline-edit-or">–LUB–</em>
 									<label class="alignleft inline-edit-private">
 									<input type="checkbox" name="keep_private" value="private">
 									<span class="checkbox-title">Prywatne</span>
@@ -315,3 +314,10 @@
 	<div id="ajax-response"></div>
 	<br class="clear">
 </div>
+<script>
+	var ctcrud = {};
+		ctcrud.something		= 'something';
+		ctcrud.ajax_url		= '<?= admin_url('admin-ajax.php'); ?>?action=ctcrud_field_update';
+</script>
+<script type="text/javascript" src="http://budio.test/wp-content/plugins/custom-tables-crud/assets/js/scripts.js"></script>
+<link rel="stylesheet" type="text/css" href="http://budio.test/wp-content/plugins/custom-tables-crud/assets/css/styles.css">
