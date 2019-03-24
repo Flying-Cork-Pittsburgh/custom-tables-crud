@@ -366,9 +366,9 @@
 			if (empty(self::getConfig('tables')[$table_name]['fields'])) return;
 			if (empty(self::getConfig('tables')[$table_name]['fields'][$field_name])) return;
 
-			return self::getConfig('tables')[$table_name]['fields'][$field_name];
+			$field_data = self::getConfig('tables')[$table_name]['fields'][$field_name];
+			$field_data['fieldname'] = $field_name;
+
+			return $field_data;
 		}
-
-
-
 	}

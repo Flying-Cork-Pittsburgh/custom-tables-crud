@@ -15,13 +15,13 @@
 		{
 			if ($field['editable'] != 1) return;
 
-			switch ($field['case'])
+			switch ($field['cast'])
 			{
 				case 'float':
 					// if empty is good then fine
 					if (empty($value) && ($field['null'])) return '';
 
-					$value = filter_var($value, FILTER_SANITIZE_FLOAT);
+					$value = filter_var($value, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
 					if (!filter_var($value, FILTER_VALIDATE_FLOAT)) return;
 
 					return floatval($value);
@@ -31,7 +31,7 @@
 					// if empty is good then fine
 					if (empty($value) && ($field['null'])) return '';
 
-					$value = filter_var($value, FILTER_SANITIZE_INT);
+					$value = filter_var($value, FILTER_SANITIZE_NUMBER_INT);
 					if (!filter_var($value, FILTER_VALIDATE_INT)) return;
 
 					return intval($value);
@@ -41,7 +41,6 @@
 					// if empty is good then fine
 					if (empty($value) && ($field['null'])) return '';
 
-					$value = filter_var($value, FILTER_SANITIZE_BOOLEAN);
 					if (!filter_var($value, FILTER_VALIDATE_BOOLEAN)) return;
 
 					return boolval($value);

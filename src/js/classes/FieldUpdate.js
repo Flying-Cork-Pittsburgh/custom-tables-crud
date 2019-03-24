@@ -68,10 +68,17 @@ class FieldUpdate {
 		.then(response => {
 			this.loading = false
 			console.log('OK ', response, response.data)
+
+			if (response.data.success) {
+				elem.addClass('update-ok')
+			} else {
+				elem.addClass('update-err')
+			}
 		})
 		.catch(error => {
 			this.loading = false
 			console.log('ERR ', error.data)
+			elem.addClass('update-err');
 		})
 	}
 

@@ -36,11 +36,13 @@
 			if (null === $this->_value) wp_send_json_error('Invalid field value');
 
 			$dbh = Plugin::getConfig('connection');
-			$dbh->updateField($table, $field, $value);
+			$updated_rows = $dbh->updateField($this->_table, $this->_field, $this->_id, $this->_value);
 
-			die('died');
-
-			return ' here\'s ajax backend handler';
+			if ($updated_rows === 1) {
+				wp_send_json_success('Field has been updated');
+			} else {
+				wp_send_json_error('Field update error');
+			}
 		}
 
 

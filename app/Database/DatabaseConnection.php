@@ -11,5 +11,5 @@
 		public function query(...$args);
 		public function fetchAll($table, ...$args);
 		public function countAll($table);
-		public function updateField($table, $field, $value);
+		public function updateField($table, $field, $id, $value);
 	}

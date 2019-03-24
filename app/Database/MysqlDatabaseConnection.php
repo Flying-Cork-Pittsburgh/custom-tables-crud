@@ -73,9 +73,34 @@
 		}
 
 
-		public function updateField($table, $field, $value)
+		public function updateField($table, $field, $id, $value)
 		{
+			$table		= QueryPrepareTool::verifyAllowedTable($table);
+			$fieldname	= QueryPrepareTool::verifyAllowedField($table, $field['fieldname']);
+			$id			= intval($id);
 
+			if (!$table || !$fieldname || !$id) return;
+
+			$data = [
+					$fieldname	=> $value,
+					'id'			=> $id,
+			];
+
+			$count = 0;
+			try {
+				$SQL = "UPDATE {$table}
+								SET {$fieldname} = :{$fieldname}
+								WHERE id = :id
+								LIMIT 1";
+				// $dpo->prepare($sql)->execute($data);
+				$stmt = $this->dbh->prepare($SQL);
+				$stmt->execute($data);
+				$count = $stmt->rowCount();
+			} catch (PDOException $e) {
+				echo 'Update action failed: ' . $e->getMessage();
+			}
+
+			return $count;
 		}
 
 

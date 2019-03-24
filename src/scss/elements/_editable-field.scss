@@ -1,0 +1,30 @@
+[contenteditable='true'] {
+	position: relative;
+
+	&::before {
+		display: block;
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 35px;
+		transition: opacity .3s;
+		background-color: rgba(#000, .06);
+		content: '';
+		cursor: text;
+	}
+
+	&:hover {
+		&::before {
+			background-color: rgba(#000, .1);
+		}
+	}
+
+	&.update-ok {
+		background-color: rgba(#0f0, .2);
+	}
+
+	&.update-err {
+		background-color: rgba(#f00, .2);
+	}
+}
