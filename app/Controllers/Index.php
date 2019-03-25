@@ -3,10 +3,10 @@
 	namespace PiotrKu\CustomTablesCrud\Controllers;
 
 	use PiotrKu\CustomTablesCrud\Plugin;
+	use PiotrKu\CustomTablesCrud\Database\QueryPrepareTool;
 	use PiotrKu\CustomTablesCrud\Models\TableDataGetter;
 	use PiotrKu\CustomTablesCrud\Models\Paginator;
-	use PiotrKu\CustomTablesCrud\Database\QueryPrepareTool;
-	// use PiotrKu\CustomTablesCrud\Controllers\Core;
+	use PiotrKu\CustomTablesCrud\Controllers\Filter;
 
 
 	class Index extends Core
@@ -56,6 +56,7 @@
 				'items'				=>	$items,
 				'paginator'			=> $paginator,
 				'editable_fields'	=> $editable_fields,
+				'filters'			=> (new Filter)->getFiltersHTML($table),
 			];
 
 			include $pluginDir.'/views/table__index.php';

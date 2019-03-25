@@ -53,9 +53,13 @@
 											'where_filter'		=> ' wholesaler_id IS NOT NULL && wholesaler_id > 0 ',
 											'filters'			=>	[
 												'wholesaler_id'	=> [
-													'title'		=> 'Dowolna hurtownia',
-													'filter'		=> ' wholesaler_id = ',
-												],
+													'title'			=> 'Dowolna hurtownia',
+													'filtertype'	=> 'wp_select',
+													'posttype'		=> 'wholesales',
+													'return'			=> 'id',
+													'display'		=> 'title',
+													'where_filter'	=> ' wholesaler_id = {value} ',
+											],
 											],
 											'fields' => [
 												'id' => [
