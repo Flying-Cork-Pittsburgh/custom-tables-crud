@@ -41,7 +41,7 @@
 			if ($updated_rows === 1) {
 				wp_send_json_success('Field has been updated');
 			} else {
-				wp_send_json_error('Field update error');
+				wp_send_json_success('Field is unchanged');
 			}
 		}
 

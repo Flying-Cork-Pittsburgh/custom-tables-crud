@@ -41,9 +41,18 @@
 					// if empty is good then fine
 					if (empty($value) && ($field['null'])) return '';
 
-					if (!filter_var($value, FILTER_VALIDATE_BOOLEAN)) return;
+					if (null === filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE)) return;
 
 					return boolval($value);
+					break;
+
+				case 'boolean_int':
+					// if empty is good then fine
+					if (empty($value) && ($field['null'])) return '';
+
+					if (null === filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE)) return;
+
+					return intval($value);
 					break;
 
 				case 'string':

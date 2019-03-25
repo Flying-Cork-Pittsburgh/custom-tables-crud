@@ -51,6 +51,12 @@
 											'menuTitle'			=> 'Produkty hurtow+',
 											'capability'		=> 'manage_product_import',
 											'where_filter'		=> ' wholesaler_id IS NOT NULL && wholesaler_id > 0 ',
+											'filters'			=>	[
+												'wholesaler_id'	=> [
+													'title'		=> 'Dowolna hurtownia',
+													'filter'		=> ' wholesaler_id = ',
+												],
+											],
 											'fields' => [
 												'id' => [
 													'title'		=> 'Id',
@@ -59,6 +65,7 @@
 													'editable'	=>	false,
 													'default'	=> null,
 													'null'		=> false,
+													'showas'		=> null,
 												],
 												'wholesaler_id' => [
 													'title'		=> 'Id hurtowni',
@@ -67,6 +74,11 @@
 													'editable'	=>	false,
 													'default'	=> null,
 													'null'		=> false,
+													'showas'		=> [
+														'posttype'	=> 'wholesales',
+														'joinon'		=> 'id',
+														'display'	=> 'title',
+													],
 												],
 												// 'wholesaler_product_id' => [
 												// 	'title'		=> 'Produkt (id)',
@@ -82,6 +94,7 @@
 													'editable'	=>	false,
 													'default'	=> null,
 													'null'		=> true,
+													'showas'		=> null,
 												],
 												'wholesaler_price' => [
 													'title'		=> 'Cena (hurt)',
@@ -90,6 +103,7 @@
 													'editable'	=>	true,
 													'default'	=> null,
 													'null'		=> true,
+													'showas'		=> null,
 												],
 												'wholesaler_price_promo' => [
 													'title'		=> 'Cena (hurt) bez promo.',
@@ -98,22 +112,25 @@
 													'editable'	=>	true,
 													'default'	=> null,
 													'null'		=> true,
+													'showas'		=> null,
 												],
 												'wholesaler_offered' => [
 													'title'		=> 'W ofercie',
 													'type'		=> 'tinyint(3) unsigned',
-													'cast'		=> 'boolean',
+													'cast'		=> 'boolean_int',
 													'editable'	=>	true,
 													'default'	=> 0,
 													'null'		=> false,
+													'showas'		=> null,
 												],
 												'wholesaler_on_demand' => [
 													'title'		=> 'Na zamówienia',
 													'type'		=> 'tinyint(3) unsigned',
-													'cast'		=> 'boolean',
+													'cast'		=> 'boolean_int',
 													'editable'	=>	true,
 													'default'	=> 0,
 													'null'		=> false,
+													'showas'		=> null,
 												],
 												'product_id' => [
 													'title'		=> 'Id produktu',
@@ -122,6 +139,7 @@
 													'editable'	=>	false,
 													'default'	=> null,
 													'null'		=> false,
+													'showas'		=> null,
 												],
 												'product_producer_id' => [
 													'title'		=> 'Id producenta',
@@ -130,6 +148,7 @@
 													'editable'	=>	false,
 													'default'	=> null,
 													'null'		=> false,
+													'showas'		=> null,
 												],
 											],
 										],
@@ -147,6 +166,7 @@
 													'editable'	=>	false,
 													'default'	=> null,
 													'null'		=> false,
+													'showas'		=> null,
 												],
 												'postal' => [
 													'title'		=> 'Kod pocztowy',
@@ -155,6 +175,7 @@
 													'editable'	=>	true,
 													'default'	=> null,
 													'null'		=> true,
+													'showas'		=> null,
 												],
 												'address' => [
 													'title'		=> 'Adres',
@@ -163,6 +184,7 @@
 													'editable'	=>	true,
 													'default'	=> null,
 													'null'		=> true,
+													'showas'		=> null,
 												],
 											],
 										],
