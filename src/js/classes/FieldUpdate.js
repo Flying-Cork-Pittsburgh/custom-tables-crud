@@ -46,7 +46,7 @@ class FieldUpdate {
 
 	_onInputChange(elem)
 	{
-		console.log('_onInputChange', this._getVars.page, elem.innerHTML, elem.getAttribute('data-rowid'), elem.getAttribute('data-colname'))
+		// console.log('_onInputChange', this._getVars.page, elem.innerHTML, elem.getAttribute('data-rowid'), elem.getAttribute('data-colname'))
 
 		this.loading = true
 		let inputs = {}
@@ -57,6 +57,9 @@ class FieldUpdate {
 
 		if (!window.ctcrud || !window.ctcrud.ajax_url) return
 
+		elem.setAttribute('title', '')
+		elem.removeClass('update-err')
+		elem.removeClass('update-ok')
 
 		axios.post(window.ctcrud.ajax_url, {
 			inputs: inputs,
@@ -67,12 +70,14 @@ class FieldUpdate {
 		})
 		.then(response => {
 			this.loading = false
-			console.log('OK ', response, response.data)
+			// console.log('OK ', response, response.data)
 
 			if (response.data.success) {
 				elem.addClass('update-ok')
+				elem.setAttribute('title', response.data.data)
 			} else {
 				elem.addClass('update-err')
+				elem.setAttribute('title', response.data.data)
 			}
 		})
 		.catch(error => {
