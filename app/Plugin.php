@@ -54,10 +54,10 @@
 											'filters'			=>	[
 												'wholesaler_id'	=> [
 													'title'			=> 'Dowolna hurtownia',
-													'filtertype'	=> 'wp_select',
-													'posttype'		=> 'wholesales',
-													'return'			=> 'id',
-													'display'		=> 'title',
+													'filter_type'	=> 'wp_select',
+													'post_type'		=> 'wholesales',
+													'select_value'	=> 'ID',
+													'select_name'	=> 'post_title',
 													'where_filter'	=> ' wholesaler_id = {value} ',
 											],
 											],
@@ -292,9 +292,9 @@
 			* @return string Prefixed string/field value
 			* @since 0.1.0
 			*/
-		public function prefix( $field_name = null, $before = '', $after = '_' ) {
+		public static function prefix( $field_name = null, $before = '', $after = '_' ) {
 
-			$prefix = $before . $this->config['prefix'] . $after;
+			$prefix = $before . self::$config['prefix'] . $after;
 			return $field_name !== null ? $prefix . $field_name : $prefix;
 
 		}

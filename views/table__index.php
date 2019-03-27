@@ -47,7 +47,12 @@
 				</div>
 				*/
 
-			?>
+
+				?>
+
+			<div class="alignleft actions">
+				<?= $vData['filters']; ?>
+			</div>
 
 			<div class="tablenav-pages">
 				<span class="displaying-num"><?= $paginator->totalItems() ?> pozycji</span>
