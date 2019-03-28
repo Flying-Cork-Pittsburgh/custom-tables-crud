@@ -52,6 +52,9 @@
 
 			<div class="alignleft actions">
 				<?= $vData['filters']; ?>
+				<input type="submit" name="filter_action" id="post-query-submit" class="button" value="Przefiltruj">
+				<input type="hidden" name="page" value="<?= $_GET['page'] ?? '' ?>">
+				<input type="hidden" name="paged" value="<?= $_GET['paged'] ?? '' ?>">
 			</div>
 
 			<div class="tablenav-pages">

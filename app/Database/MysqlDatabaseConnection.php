@@ -43,11 +43,11 @@
 		}
 
 
-		public function fetchAll($table, $limit = null, $offset = null, $order = null, ...$args)
+		public function fetchAll($table, $where = '', $limit = null, $offset = null, $order = null, ...$args)
 		{
 			$cols = QueryPrepareTool::getAllowedCols($table);
-			$where = QueryPrepareTool::getWhereFilter($table);
-			$where = $where ? " {$where} " : " 1 = 1 ";
+			// $where = QueryPrepareTool::getBaseWhereFilter($table);
+			// $where = $where ? " {$where} " : " 1 = 1 ";
 
 			$orderby = preg_replace('/[^a-z0-9_]/', '', $order['orderby']);
 			$orderdir = in_array($order['order'], ['ASC', 'DESC']) ? $order['order'] : 'ASC';
@@ -58,7 +58,7 @@
 			try {
 				$SQL = "SELECT ".  implode(', ', $cols) .
 								" FROM {$table} " .
-								" WHERE {$where} " .
+								" {$where} " .
 								$order .
 								" {$offsetLimit}";
 

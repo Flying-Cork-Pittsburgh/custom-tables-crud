@@ -23,13 +23,36 @@
 		}
 
 
-		public static function getWhereFilter($table)
+		public static function getBaseWhereFilter($table)
 		{
 			$tables = Plugin::getConfig('tables');
 
 			if (empty($tables[$table]) || empty($tables[$table]['where_filter'])) return;
 
 			return $tables[$table]['where_filter'];
+		}
+
+
+		public static function getGetWhereFilter($table, $filters_get)
+		{
+			if (empty($filters_get)) return;
+
+			$tables = Plugin::getConfig('tables');
+			if (empty($tables[$table]) || empty($tables[$table]['filters'])) return;
+
+
+			$filters_cfg = $tables[$table]['filters'];
+			$where_arr = [];
+
+			foreach ((array)$filters_get as $filter_field => $filter_value)
+			{
+				if (!empty($filters_cfg[$filter_field]) && !empty($filters_cfg[$filter_field]['where_filter']))
+				{
+					$where_arr[] = str_replace('{value}', $filter_value, $filters_cfg[$filter_field]['where_filter']);
+				}
+			}
+
+			return implode(' && ' , $where_arr);
 		}
 
 

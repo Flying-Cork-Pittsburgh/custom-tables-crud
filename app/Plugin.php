@@ -59,7 +59,15 @@
 													'select_value'	=> 'ID',
 													'select_name'	=> 'post_title',
 													'where_filter'	=> ' wholesaler_id = {value} ',
-											],
+												],
+												'product_producer_id'	=> [
+													'title'			=> 'Dowolny producent',
+													'filter_type'	=> 'wp_select',
+													'post_type'		=> 'producers',
+													'select_value'	=> 'ID',
+													'select_name'	=> 'post_title',
+													'where_filter'	=> ' product_producer_id = {value} ',
+												],
 											],
 											'fields' => [
 												'id' => [

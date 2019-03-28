@@ -27,9 +27,19 @@
 
 			if (empty($tablesConfig[$table])) die('config for table not found, exiting...');
 
+			$get_filters = empty($_GET[Plugin::prefix() . 'filter']) ? null : $_GET[Plugin::prefix() . 'filter'];
+
+			$where			= " WHERE 1=1 ";
+			$where_get		= QueryPrepareTool::getGetWhereFilter($table, $get_filters);
+			$where_get		= $where_get ?? ' 2=2 ';
+			$where_base		= QueryPrepareTool::getBaseWhereFilter($table);
+			$where_base		= $where_base ?? ' 3=3 ';
+
+			$where .= " && {$where_base}";
+			$where .= " && {$where_get}";
 
 			$offset = (intval($_GET['paged'] ?? 1) - 1) * $perPage;
-			$items = TableDataGetter::getElems($table, $perPage, $offset,
+			$items = TableDataGetter::getElems($table, $where, $perPage, $offset,
 							[
 								'order'	=> 'ASC',
 								'orderby'	=> 'id',
@@ -41,12 +51,9 @@
 			}
 
 			$cols = QueryPrepareTool::getAllowedCols($table);
-			$where = QueryPrepareTool::getWhereFilter($table);
-			$where = $where ? " WHERE {$where} " : '';
 			$query = "SELECT COUNT(".  $cols[0] . ") AS cnt FROM " . $table . " {$where} ";
 
 			$paginator = new Paginator($query, $perPage);
-
 
 
 			$vData = [

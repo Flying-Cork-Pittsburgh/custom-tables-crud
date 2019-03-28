@@ -203,18 +203,48 @@ class Paginator
 	 * 	$get_vars		- values from $_GET
 	 * 	$paging_var		- name of the parameter responsible for current page number 'paged'
 	 * 	$i					- value of the 'paged' variable to be set
+	 *
+
+			[
+				'page'	=> "ctcrud_wholesaler_prods",
+				'paged'	=> "1",
+			]
+
+			to
+
+	 		[
+				0 => "page=ctcrud_wholesaler_prods"
+				1 => "paged=2"
+			 ]
+
 	 */
-	public function prepareNewGetVars($get_vars, $paging_var, $i)
+	public function prepareNewGetVars($get_vars, $paging_var = 'paged', $i = 1)
 	{
+		// echo '<pre>';
+		// print_r($get_vars);
+		// echo '</pre>';
+		// die('');
 		if (empty($get_vars[$this->paging_var])) $get_vars[$this->paging_var] = 1;
 
-		return array_map(function($k, $v) use ($paging_var, $i) {
+		$foo = array_map(function($k, $v) use ($paging_var, $i) {
 			if ($k !== $paging_var) {
-				return "{$k}={$v}";
+				if (is_array($v))
+				{
+					foreach ($v as $vkey => $vval)
+					{
+						return "{$k}[{$vkey}]={$vval}";
+					}
+				}
+				else
+				{
+					return "{$k}={$v}";
+				}
 			} else {
 				return "{$k}={$i}";
 			}
 		}, array_keys($get_vars), $get_vars);
+
+		return $foo;
 	}
 
 

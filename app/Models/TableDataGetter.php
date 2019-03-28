@@ -13,10 +13,10 @@
 		}
 
 
-		public static function getElems($table, $limit = null, $offset = null, $order = null)
+		public static function getElems($table, $where = '', $limit = null, $offset = null, $order = null)
 		{
 			$connection = Plugin::getConfig('connection');
-			$results = $connection->fetchAll($table, $limit, $offset, $order);
+			$results = $connection->fetchAll($table, $where, $limit, $offset, $order);
 
 			return $results;
 		}

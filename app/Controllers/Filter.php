@@ -26,6 +26,8 @@
 			if (empty($tablesConfig[$table])) die('config for table not found, exiting...');
 			if (!$tablesConfig[$table]['filters']) return '';
 
+			$get_filters = empty($_GET[Plugin::prefix() . 'filter']) ? null : $_GET[Plugin::prefix() . 'filter'];
+
 			$this->_filters = $tablesConfig[$table]['filters'];
 
 			$filter_data = $this->getFilterData();
@@ -35,15 +37,17 @@
 
 			foreach ($this->_filters as $field_id => $filter)
 			{
-				$out .= "<label for=\"{$tablePrefix}-{$field_id}-filter-{$hash}\" class=\"screen-reader-text\">
+
+				$out .= "<label for=\"{$tablePrefix}filter_{$field_id}\" class=\"screen-reader-text\">
 				Filter by {$filter['title']}";
 				$out .= "</label>\n";
-				$out .= "<select name=\"{$tablePrefix}-{$field_id}-filter[{$hash}]\" id=\"{$tablePrefix}-filter-{$hash}\" class=\"postform {$tablePrefix}-filter\" data-current=\"\">";
-				$out .= "<option value=\"\" selected=\"selected\">Dowolna hurtownia</option>";
+				$out .= "<select name=\"{$tablePrefix}filter[{$field_id}]\" id=\"{$tablePrefix}filter_{$field_id}\" class=\"postform {$tablePrefix}filter\" data-current=\"\">";
+				$out .= "<option value=\"\" selected=\"selected\">{$filter['title']}</option>";
 
-				foreach ((array)$filter_data as $item_key => $item)
+				foreach ((array)$filter_data[$field_id] as $item_key => $item)
 				{
-					$out .= "<option value=\"{$item_key}\">{$item}</option>";
+					$selected = (!empty($get_filters[$field_id]) && $get_filters[$field_id] == $item_key) ? ' selected=\"selected\" ' : '';
+					$out .= "<option value=\"{$item_key}\" {$selected}>{$item}</option>";
 				}
 
 				$out .= "</select>\n";
@@ -62,14 +66,16 @@
 			// )
 
 			// $cols = QueryPrepareTool::getAllowedCols($table);
-			// $where = QueryPrepareTool::getWhereFilter($table);
+			// $where = QueryPrepareTool::getBaseWhereFilter($table);
 			// $where = $where ? " WHERE {$where} " : '';
 			// $query = "SELECT COUNT(".  $cols[0] . ") AS cnt FROM " . $table . " {$where} ";
 		}
 
 		protected function getFilterData()
 		{
-			foreach ((array)$this->_filters as $filter)
+			$filter_data = [];
+
+			foreach ((array)$this->_filters as $filter_key => $filter)
 			{
 				switch ($filter['filter_type'])
 				{
@@ -92,20 +98,18 @@
 						$posts_array = get_posts($args);
 						if (!$posts_array) return;
 
-						$filter_data = [];
 						foreach ($posts_array as $filter_post)
 						{
-							$filter_data[$filter_post->{$filter['select_value']}] = $filter_post->{$filter['select_name']};
+							$filter_data[$filter_key][$filter_post->{$filter['select_value']}] = $filter_post->{$filter['select_name']};
 						}
-
-						return $filter_data;
 
 						break;
 					default:
 						die('unsupported filter type');
 				}
-
 			}
+
+			return $filter_data;
 
 		}
 	}
