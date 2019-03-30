@@ -3,7 +3,7 @@
  * @wordpress-plugin
  * Plugin Name:       Custom Tables CRUD Plugin
  * Plugin URI:        https://github.com/piotrku/custom-tables-crud
- * Description:       A boilerplate for WordPress plugins
+ * Description:       A custom tables CRUD
  * Version:           0.0.1
  * Author:            Piotr Kubiak
  * Author URI:        https://2pi.pl

@@ -46,6 +46,8 @@
 
 			foreach ((array)$filters_get as $filter_field => $filter_value)
 			{
+				if (empty($filter_value)) continue;
+
 				if (!empty($filters_cfg[$filter_field]) && !empty($filters_cfg[$filter_field]['where_filter']))
 				{
 					$where_arr[] = str_replace('{value}', $filter_value, $filters_cfg[$filter_field]['where_filter']);

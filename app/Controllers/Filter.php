@@ -3,12 +3,13 @@
 	namespace PiotrKu\CustomTablesCrud\Controllers;
 
 	use PiotrKu\CustomTablesCrud\Plugin;
-	// use PiotrKu\CustomTablesCrud\Models\TableDataGetter;
+	use PiotrKu\CustomTablesCrud\Models\TableDataGetter;
 	// use PiotrKu\CustomTablesCrud\Database\QueryPrepareTool;
 
 
 	class Filter
 	{
+		protected $_table;
 		protected $_filters;
 		protected $_filter_data;
 
@@ -20,6 +21,8 @@
 
 		public function getFiltersHTML($table)
 		{
+			$this->_table = $table;
+
 			$tablesConfig 	= Plugin::getConfig('tables');
 			$tablePrefix	= Plugin::prefix();
 
@@ -41,7 +44,7 @@
 				$out .= "<label for=\"{$tablePrefix}filter_{$field_id}\" class=\"screen-reader-text\">
 				Filter by {$filter['title']}";
 				$out .= "</label>\n";
-				$out .= "<select name=\"{$tablePrefix}filter[{$field_id}]\" id=\"{$tablePrefix}filter_{$field_id}\" class=\"postform {$tablePrefix}filter\" data-current=\"\">";
+				$out .= "<select name=\"{$tablePrefix}filter[{$field_id}]\" id=\"{$tablePrefix}filter_{$field_id}\" class=\"postform {$tablePrefix}filter\" data-current=\"\" title=\"{$filter['title']}\">";
 				$out .= "<option value=\"\" selected=\"selected\">{$filter['title']}</option>";
 
 				foreach ((array)$filter_data[$field_id] as $item_key => $item)
@@ -54,21 +57,6 @@
 			}
 
 			return $out;
-
-			// [wholesaler_id] => Array
-			// (
-			// 	 [title] => Dowolna hurtownia
-			// 	 [filtertype] => wp_select
-			// 	 [posttype] => wholesales
-			// 	 [return] => id
-			// 	 [display] => title
-			// 	 [where_filter] =>  wholesaler_id = {value}
-			// )
-
-			// $cols = QueryPrepareTool::getAllowedCols($table);
-			// $where = QueryPrepareTool::getBaseWhereFilter($table);
-			// $where = $where ? " WHERE {$where} " : '';
-			// $query = "SELECT COUNT(".  $cols[0] . ") AS cnt FROM " . $table . " {$where} ";
 		}
 
 		protected function getFilterData()
@@ -96,14 +84,52 @@
 							'post_status'      => 'publish',
 						];
 						$posts_array = get_posts($args);
-						if (!$posts_array) return;
+						if (empty($posts_array)) continue;
 
 						foreach ($posts_array as $filter_post)
 						{
 							$filter_data[$filter_key][$filter_post->{$filter['select_value']}] = $filter_post->{$filter['select_name']};
 						}
+						/*
+							[
+								[wholesaler_id] => [
+											[243] => Budchem Górecka
+											[138] => Doradca budowlany 24
+											[1097] => Test
+								]
+							]
+						*/
 
 						break;
+
+					case 'table_vals':
+						/*
+							'title'			=> 'Produkt w ofercie',
+							'filter_type'	=> 'table_vals',
+							'post_type'		=> null,
+							'select_value'	=> null,
+							'select_name'	=> null,
+							'where_filter'	=> ' wholesaler_offered = {value} ',
+						*/
+						// echo "test";
+						$table_vals = TableDataGetter::getElems($this->_table, null, null, null,
+							[
+								'order'		=> 'ASC',
+								'orderby'	=> $filter_key,
+							],
+							$filter_key,
+							[$filter_key]
+						);
+
+						if (empty($table_vals)) continue;
+
+						foreach ($table_vals as $table_val)
+						{
+							$filter_data[$filter_key][$table_val[$filter_key]] = $table_val[$filter_key];
+						}
+
+						break;
+
 					default:
 						die('unsupported filter type');
 				}

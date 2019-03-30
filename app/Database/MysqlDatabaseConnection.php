@@ -43,14 +43,26 @@
 		}
 
 
-		public function fetchAll($table, $where = '', $limit = null, $offset = null, $order = null, ...$args)
+		public function fetchAll($table, $where = '', $limit = null, $offset = null, $order = null, $groupby = null, $cols = [],
+					...$args)
 		{
-			$cols = QueryPrepareTool::getAllowedCols($table);
+			$cols_allowed = QueryPrepareTool::getAllowedCols($table);
+
+			if (empty($cols))
+			{
+				$cols = $cols_allowed;
+			}
+			else
+			{
+				$cols = array_intersect($cols_allowed, $cols);
+			}
+
 			// $where = QueryPrepareTool::getBaseWhereFilter($table);
 			// $where = $where ? " {$where} " : " 1 = 1 ";
 
 			$orderby = preg_replace('/[^a-z0-9_]/', '', $order['orderby']);
 			$orderdir = in_array($order['order'], ['ASC', 'DESC']) ? $order['order'] : 'ASC';
+			$groupby = !empty($groupby) ? 'GROUP BY ' . preg_replace('/[^a-z0-9_]/', '', $groupby) : '';
 			$order = $order && !empty($order['order']) ? " ORDER BY {$orderby} {$orderdir} " : '';
 
 			$offsetLimit = $this->prepareLimitString($limit, $offset);
@@ -59,6 +71,7 @@
 				$SQL = "SELECT ".  implode(', ', $cols) .
 								" FROM {$table} " .
 								" {$where} " .
+								" {$groupby} " .
 								$order .
 								" {$offsetLimit}";
 
