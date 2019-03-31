@@ -34,8 +34,12 @@
 			self::$config = [
 				'prefix'					=> 'ctcrud',
 				'shortName'				=> 'Custom Tables CRUD',
+				'pluginSlug'			=> 'custom-tables-crud',
+				'pluginVersion'		=> '0.0.1',
 				'pluginIdentifier'	=> 'custom-tables-crud/custom-tables-crud.php',
 				'pluginDir'				=> dirname(dirname(__FILE__), 1),
+				'pluginUrl'				=> dirname(plugin_dir_url(__FILE__), 1),
+				'pluginPath'			=> dirname(plugin_dir_path(__FILE__), 1),
 				'dependencies' 		=>
 									[
 										'php' => '7.0',
@@ -69,7 +73,7 @@
 													'where_filter'	=> ' product_producer_id = {value} ',
 												],
 												'wholesaler_offered'	=> [
-													'title'			=> 'W ofercie',
+													'title'			=> 'Czy w ofercie',
 													'filter_type'	=> 'table_vals',
 													'post_type'		=> null,
 													'select_value'	=> null,
@@ -77,7 +81,7 @@
 													'where_filter'	=> ' wholesaler_offered = {value} ',
 												],
 												'wholesaler_on_demand'	=> [
-													'title'			=> 'Na zamówienie',
+													'title'			=> 'Czy na zamówienie',
 													'filter_type'	=> 'table_vals',
 													'post_type'		=> null,
 													'select_value'	=> null,
@@ -300,7 +304,7 @@
 			// new Settings\Customizer_Options();
 
 			// Enqueue scripts and stylesheets
-			// new EnqueueScripts();
+			new EnqueueScripts();
 
 			// Perform core plugin logic
 			// new Core();
@@ -352,7 +356,7 @@
 
 		private function cleanUp( $die = false, $activate = false )
 		{
-			die('CRUD plugin cleanUp');
+			return true;// die('CRUD plugin cleanUp');
 		}
 		/**
 			* Function to verify dependencies, such as if an outdated version of Carbon

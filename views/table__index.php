@@ -322,10 +322,3 @@
 	<div id="ajax-response"></div>
 	<br class="clear">
 </div>
-<script>
-	var ctcrud = {};
-		ctcrud.something		= 'something';
-		ctcrud.ajax_url		= '<?= admin_url('admin-ajax.php'); ?>?action=ctcrud_field_update';
-</script>
-<script type="text/javascript" src="http://budio.test/wp-content/plugins/custom-tables-crud/assets/js/scripts.js"></script>
-<link rel="stylesheet" type="text/css" href="http://budio.test/wp-content/plugins/custom-tables-crud/assets/css/styles.css">
