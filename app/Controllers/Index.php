@@ -3,6 +3,7 @@
 	namespace PiotrKu\CustomTablesCrud\Controllers;
 
 	use PiotrKu\CustomTablesCrud\Plugin;
+	use PiotrKu\CustomTablesCrud\Database\Query;
 	use PiotrKu\CustomTablesCrud\Database\QueryPrepareTool;
 	use PiotrKu\CustomTablesCrud\Models\TableDataGetter;
 	use PiotrKu\CustomTablesCrud\Models\Paginator;
@@ -39,12 +40,16 @@
 			$where .= " && {$where_get}";
 
 			$offset = (intval($_GET['paged'] ?? 1) - 1) * $perPage;
-			$items = TableDataGetter::getElems($table, $where, $perPage, $offset,
-							[
-								'order'	=> 'ASC',
-								'orderby'	=> 'id',
-							]
-			);
+
+			$query = new Query();
+			$query->table = $table;
+			$query->where = $where;
+			$query->limit = $perPage;
+			$query->offset = $offset;
+			$query->orderdir = 'ASC';
+			$query->orderby = 'id';
+
+			$items = TableDataGetter::getElemsQuery($query);
 
 			foreach ($tablesConfig[$table]['fields'] as $fkey => $field) {
 				$editable_fields[$fkey] = $field['editable'];

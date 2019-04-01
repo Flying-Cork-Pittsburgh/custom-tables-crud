@@ -105,8 +105,8 @@
 
 			$lines = [
 				'var ctcrud = {};',
-				'ctcrud.something = \'something\';',
 				'ctcrud.ajax_url = \'' . admin_url('admin-ajax.php') . '?action=ctcrud_field_update\';',
+				// 'ctcrud.something = \'something\';',
 			];
 
 			echo "<script type=\"text/javascript\">\n";

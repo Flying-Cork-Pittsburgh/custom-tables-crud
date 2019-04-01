@@ -1,4 +1,6 @@
 {
     "/assets/js/scripts.js": "/assets/js/scripts.js",
-    "/assets/css/styles.css": "/assets/css/styles.css"
+    "/assets/css/styles.css": "/assets/css/styles.css",
+    "/assets/js/scripts.js.map": "/assets/js/scripts.js.map",
+    "/assets/css/styles.css.map": "/assets/css/styles.css.map"
 }

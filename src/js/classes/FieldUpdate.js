@@ -58,6 +58,7 @@ class FieldUpdate {
 		if (!window.ctcrud || !window.ctcrud.ajax_url) return
 
 		elem.setAttribute('title', '')
+		elem.addClass('update-sent')
 		elem.removeClass('update-err')
 		elem.removeClass('update-ok')
 
@@ -73,9 +74,11 @@ class FieldUpdate {
 			// console.log('OK ', response, response.data)
 
 			if (response.data.success) {
+				elem.removeClass('update-sent')
 				elem.addClass('update-ok')
 				elem.setAttribute('title', response.data.data)
 			} else {
+				elem.removeClass('update-sent')
 				elem.addClass('update-err')
 				elem.setAttribute('title', response.data.data)
 			}
@@ -83,6 +86,7 @@ class FieldUpdate {
 		.catch(error => {
 			this.loading = false
 			console.log('ERR ', error.data)
+			elem.removeClass('update-sent')
 			elem.addClass('update-err');
 		})
 	}

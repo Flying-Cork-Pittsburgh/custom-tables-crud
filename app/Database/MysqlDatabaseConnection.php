@@ -4,6 +4,7 @@
 
 	use PiotrKu\CustomTablesCrud\Database\DatabaseConnection;
 	use PiotrKu\CustomTablesCrud\Database\QueryPrepareTool;
+	use PiotrKu\CustomTablesCrud\Database\Query;
 
 
 	// The implementation we're currently using.
@@ -43,29 +44,31 @@
 		}
 
 
-		public function fetchAll($table, $where = '', $limit = null, $offset = null, $order = null, $groupby = null, $cols = [],
-					...$args)
+		public function fetchAllQuery(Query $query)
 		{
-			$cols_allowed = QueryPrepareTool::getAllowedCols($table);
+			$cols_allowed = QueryPrepareTool::getAllowedCols($query->table);
 
-			if (empty($cols))
+			if (empty($query->cols))
 			{
 				$cols = $cols_allowed;
 			}
 			else
 			{
-				$cols = array_intersect($cols_allowed, $cols);
+				$cols = array_intersect($cols_allowed, $query->cols);
 			}
 
 			// $where = QueryPrepareTool::getBaseWhereFilter($table);
 			// $where = $where ? " {$where} " : " 1 = 1 ";
 
-			$orderby = preg_replace('/[^a-z0-9_]/', '', $order['orderby']);
-			$orderdir = in_array($order['order'], ['ASC', 'DESC']) ? $order['order'] : 'ASC';
-			$groupby = !empty($groupby) ? 'GROUP BY ' . preg_replace('/[^a-z0-9_]/', '', $groupby) : '';
-			$order = $order && !empty($order['order']) ? " ORDER BY {$orderby} {$orderdir} " : '';
+			$table = $query->table;
+			$where = $query->where;
 
-			$offsetLimit = $this->prepareLimitString($limit, $offset);
+			$orderby = preg_replace('/[^a-z0-9_]/', '', $query->orderby);
+			$orderdir = in_array($query->orderdir, ['ASC', 'DESC']) ? $query->orderdir : 'ASC';
+			$groupby = !empty($query->groupby) ? 'GROUP BY ' . preg_replace('/[^a-z0-9_]/', '', $query->groupby) : '';
+			$order = $query->orderdir && !empty($query->orderdir) ? " ORDER BY {$orderby} {$orderdir} " : '';
+
+			$offsetLimit = $this->prepareLimitString($query->limit, $query->offset);
 
 			try {
 				$SQL = "SELECT ".  implode(', ', $cols) .
@@ -84,6 +87,49 @@
 
 			return $result;
 		}
+
+
+		// public function fetchAll($table, $where = '', $limit = null, $offset = null, $order = null, $groupby = null, $cols = [],
+		// 			...$args)
+		// {
+		// 	$cols_allowed = QueryPrepareTool::getAllowedCols($table);
+
+		// 	if (empty($cols))
+		// 	{
+		// 		$cols = $cols_allowed;
+		// 	}
+		// 	else
+		// 	{
+		// 		$cols = array_intersect($cols_allowed, $cols);
+		// 	}
+
+		// 	// $where = QueryPrepareTool::getBaseWhereFilter($table);
+		// 	// $where = $where ? " {$where} " : " 1 = 1 ";
+
+		// 	$orderby = preg_replace('/[^a-z0-9_]/', '', $order['orderby']);
+		// 	$orderdir = in_array($order['order'], ['ASC', 'DESC']) ? $order['order'] : 'ASC';
+		// 	$groupby = !empty($groupby) ? 'GROUP BY ' . preg_replace('/[^a-z0-9_]/', '', $groupby) : '';
+		// 	$order = $order && !empty($order['order']) ? " ORDER BY {$orderby} {$orderdir} " : '';
+
+		// 	$offsetLimit = $this->prepareLimitString($limit, $offset);
+
+		// 	try {
+		// 		$SQL = "SELECT ".  implode(', ', $cols) .
+		// 						" FROM {$table} " .
+		// 						" {$where} " .
+		// 						" {$groupby} " .
+		// 						$order .
+		// 						" {$offsetLimit}";
+
+		// 		$stmt = $this->dbh->prepare($SQL);
+		// 		$stmt->execute();
+		// 		$result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+		// 	} catch (PDOException $e) {
+		// 		echo 'Action failed: ' . $e->getMessage();
+		// 	}
+
+		// 	return $result;
+		// }
 
 
 		public function updateField($table, $field, $id, $value)

@@ -20,6 +20,10 @@
 		}
 	}
 
+	&.update-sent {
+		background-color: rgba(#00f, .1);
+	}
+
 	&.update-ok {
 		background-color: rgba(#0f0, .2);
 	}

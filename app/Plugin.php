@@ -57,7 +57,7 @@
 											'where_filter'		=> ' wholesaler_id IS NOT NULL && wholesaler_id > 0 ',
 											'filters'			=>	[
 												'wholesaler_id'	=> [
-													'title'			=> 'Hurtownia',
+													'title'			=> '- która hurtownia -',
 													'filter_type'	=> 'wp_select',
 													'post_type'		=> 'wholesales',
 													'select_value'	=> 'ID',
@@ -65,7 +65,7 @@
 													'where_filter'	=> ' wholesaler_id = {value} ',
 												],
 												'product_producer_id'	=> [
-													'title'			=> 'Producent',
+													'title'			=> '- który producent -',
 													'filter_type'	=> 'wp_select',
 													'post_type'		=> 'producers',
 													'select_value'	=> 'ID',
@@ -73,7 +73,7 @@
 													'where_filter'	=> ' product_producer_id = {value} ',
 												],
 												'wholesaler_offered'	=> [
-													'title'			=> 'Czy w ofercie',
+													'title'			=> '- czy w ofercie -',
 													'filter_type'	=> 'table_vals',
 													'post_type'		=> null,
 													'select_value'	=> null,
@@ -81,7 +81,7 @@
 													'where_filter'	=> ' wholesaler_offered = {value} ',
 												],
 												'wholesaler_on_demand'	=> [
-													'title'			=> 'Czy na zamówienie',
+													'title'			=> '- czy na zamówienie -',
 													'filter_type'	=> 'table_vals',
 													'post_type'		=> null,
 													'select_value'	=> null,

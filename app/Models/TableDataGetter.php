@@ -3,6 +3,7 @@
 	namespace PiotrKu\CustomTablesCrud\Models;
 
 	use PiotrKu\CustomTablesCrud\Plugin;
+	use PiotrKu\CustomTablesCrud\Database\Query;
 	// use PiotrKu\CustomTablesCrud\Database\Connection;
 
 
@@ -13,14 +14,23 @@
 		}
 
 
-		public static function getElems($table, $where = '', $limit = null, $offset = null,
-			$order = null, $groupby = null, $cols = null)
+		public static function getElemsQuery(Query $query)
 		{
 			$connection = Plugin::getConfig('connection');
-			$results = $connection->fetchAll($table, $where, $limit, $offset, $order, $groupby, $cols);
+			$results = $connection->fetchAllQuery($query);
 
 			return $results;
 		}
+
+
+		// public static function getElems($table, $where = '', $limit = null, $offset = null,
+		// 	$order = null, $groupby = null, $cols = null)
+		// {
+		// 	$connection = Plugin::getConfig('connection');
+		// 	$results = $connection->fetchAll($table, $where, $limit, $offset, $order, $groupby, $cols);
+
+		// 	return $results;
+		// }
 
 
 		public static function countElems($table)

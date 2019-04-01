@@ -4,6 +4,7 @@
 
 	use PiotrKu\CustomTablesCrud\Plugin;
 	use PiotrKu\CustomTablesCrud\Models\TableDataGetter;
+	use PiotrKu\CustomTablesCrud\Database\Query;
 	// use PiotrKu\CustomTablesCrud\Database\QueryPrepareTool;
 
 
@@ -112,14 +113,13 @@
 							'where_filter'	=> ' wholesaler_offered = {value} ',
 						*/
 						// echo "test";
-						$table_vals = TableDataGetter::getElems($this->_table, null, null, null,
-							[
-								'order'		=> 'ASC',
-								'orderby'	=> $filter_key,
-							],
-							$filter_key,
-							[$filter_key]
-						);
+						$query = new Query;
+						$query->table = $this->_table;
+						$query->orderby = $filter_key;
+						$query->orderdir = 'ASC';
+						$query->cols = [$filter_key];
+
+						$table_vals = TableDataGetter::getElemsQuery($query);
 
 						if (empty($table_vals)) continue;
 
