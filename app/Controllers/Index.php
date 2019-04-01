@@ -50,6 +50,7 @@
 			$query->orderby = 'id';
 
 			$items = TableDataGetter::getElemsQuery($query);
+			$items = (new DataShowAsRetriever)->retrieve($table, $items);
 
 			foreach ($tablesConfig[$table]['fields'] as $fkey => $field) {
 				$editable_fields[$fkey] = $field['editable'];
@@ -59,7 +60,6 @@
 			$query = "SELECT COUNT(".  $cols[0] . ") AS cnt FROM " . $table . " {$where} ";
 
 			$paginator = new Paginator($query, $perPage);
-
 
 			$vData = [
 				'pageTitle'			=>	$tablesConfig[$table]['pageTitle'] ?? '-',

@@ -154,7 +154,11 @@
 					<tr id="post-<?= key($item) ?>" class="iedit author-other level-0 status-publish has-post-thumbnail hentry" data-rowwrapper>
 						<?php foreach ($item as $ckey => $cval): ?>
 							<td class="date column-<?= $ckey ?>" data-colname="<?= $ckey ?>" contenteditable="<?= $editable_fields[$ckey] ? 'true' : 'false' ?>" <?= $editable_fields[$ckey] ? ' data-rowid="'.$item['id'].'" ' : '' ?>>
-								<?= $cval ?>
+								<?php if (!empty($cval['link'])): ?>
+									<a href="<?= $cval['link'] ?>" target="new"><?= is_array($cval) ? $cval['value'] : $cval ?></a>
+								<?php else: ?>
+									<?= is_array($cval) ? $cval['value'] : $cval ?>
+								<?php endif ?>
 							</td>
 						<?php endforeach ?>
 					</tr>
@@ -204,12 +208,12 @@
 							<legend class="inline-edit-legend">Szybka edycja</legend>
 							<div class="inline-edit-col">
 								<label>
-								<span class="title">Tytuł</span>
-								<span class="input-text-wrap"><input type="text" name="post_title" class="ptitle" value=""></span>
+									<span class="title">Tytuł</span>
+									<span class="input-text-wrap"><input type="text" name="post_title" class="ptitle" value=""></span>
 								</label>
 								<label>
-								<span class="title">Upr. nazwa</span>
-								<span class="input-text-wrap"><input type="text" name="post_name" value=""></span>
+									<span class="title">Upr. nazwa</span>
+									<span class="input-text-wrap"><input type="text" name="post_name" value=""></span>
 								</label>
 								<fieldset class="inline-edit-date">
 									<legend><span class="title">Data</span></legend>
@@ -226,7 +230,7 @@
 												<option value="06" data-text="Cze">06</option>
 												<option value="07" data-text="Lip">07</option>
 												<option value="08" data-text="Sie">08</option>
-												<option value="09" data-text="Wrz" selected="selected">09</option>
+												<option value="09" data-text="Wrz">09</option>
 												<option value="10" data-text="Paź">10</option>
 												<option value="11" data-text="Lis">11</option>
 												<option value="12" data-text="Gru">12</option>
@@ -267,7 +271,8 @@
 						</fieldset>
 						<div class="submit inline-edit-save">
 							<button type="button" class="button cancel alignleft">Anuluj</button>
-							<input type="hidden" id="_inline_edit" name="_inline_edit" value="00c9f05201">				<button type="button" class="button button-primary save alignright">Zaktualizuj</button>
+							<input type="hidden" id="_inline_edit" name="_inline_edit" value="00c9f05201">
+							<button type="button" class="button button-primary save alignright">Zaktualizuj</button>
 							<span class="spinner"></span>
 							<input type="hidden" name="post_view" value="list">
 							<input type="hidden" name="screen" value="edit-producers">
@@ -307,7 +312,7 @@
 						</fieldset>
 						<div class="submit inline-edit-save">
 							<button type="button" class="button cancel alignleft">Anuluj</button>
-							<input type="submit" name="bulk_edit" id="bulk_edit" class="button button-primary alignright" value="Zaktualizuj">			<input type="hidden" name="post_view" value="list">
+							<input type="submit" name="bulk_edit" id="bulk_edit" class="button button-primary alignright" value="Zaktualizuj">	<input type="hidden" name="post_view" value="list">
 							<input type="hidden" name="screen" value="edit-producers">
 							<br class="clear">
 							<div class="notice notice-error notice-alt inline hidden">
