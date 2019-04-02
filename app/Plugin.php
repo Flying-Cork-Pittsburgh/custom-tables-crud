@@ -97,6 +97,7 @@
 													'editable'	=>	false,
 													'default'	=> null,
 													'null'		=> false,
+													'orderable'	=> true,
 													'showas'		=> null,
 												],
 												'wholesaler_id' => [
@@ -106,6 +107,7 @@
 													'editable'	=>	false,
 													'default'	=> null,
 													'null'		=> false,
+													'orderable'	=> false,
 													'showas'		=> [
 														'posttype'	=> 'wholesales',
 														'joinon'		=> 'ID',
@@ -127,6 +129,7 @@
 													'editable'	=>	false,
 													'default'	=> null,
 													'null'		=> true,
+													'orderable'	=> true,
 													'showas'		=> null,
 												],
 												'wholesaler_price' => [
@@ -136,6 +139,7 @@
 													'editable'	=>	true,
 													'default'	=> null,
 													'null'		=> true,
+													'orderable'	=> true,
 													'showas'		=> null,
 												],
 												'wholesaler_price_promo' => [
@@ -145,6 +149,7 @@
 													'editable'	=>	true,
 													'default'	=> null,
 													'null'		=> true,
+													'orderable'	=> true,
 													'showas'		=> null,
 												],
 												'wholesaler_offered' => [
@@ -154,6 +159,7 @@
 													'editable'	=>	true,
 													'default'	=> 0,
 													'null'		=> false,
+													'orderable'	=> true,
 													'showas'		=> null,
 												],
 												'wholesaler_on_demand' => [
@@ -163,6 +169,7 @@
 													'editable'	=>	true,
 													'default'	=> 0,
 													'null'		=> false,
+													'orderable'	=> true,
 													'showas'		=> null,
 												],
 												'product_id' => [
@@ -172,7 +179,7 @@
 													'editable'	=>	false,
 													'default'	=> null,
 													'null'		=> false,
-													// 'showas'		=> null,
+													'orderable'	=> false,
 													'showas'		=> [
 														'posttype'	=> 'products',
 														'joinon'		=> 'ID',
@@ -187,6 +194,7 @@
 													'editable'	=>	false,
 													'default'	=> null,
 													'null'		=> false,
+													'orderable'	=> false,
 													'showas'		=> [
 														'posttype'	=> 'producers',
 														'joinon'		=> 'ID',
@@ -210,6 +218,7 @@
 													'editable'	=>	false,
 													'default'	=> null,
 													'null'		=> false,
+													'orderable'	=> false,
 													'showas'		=> null,
 												],
 												'postal' => [
@@ -219,6 +228,7 @@
 													'editable'	=>	true,
 													'default'	=> null,
 													'null'		=> true,
+													'orderable'	=> false,
 													'showas'		=> null,
 												],
 												'address' => [
@@ -228,6 +238,7 @@
 													'editable'	=>	true,
 													'default'	=> null,
 													'null'		=> true,
+													'orderable'	=> false,
 													'showas'		=> null,
 												],
 											],

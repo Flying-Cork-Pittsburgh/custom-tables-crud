@@ -68,16 +68,37 @@
 		}
 
 
-		public static function verifyAllowedField($table, $fieldname)
+		public static function verifyAllowedField($table, $fieldname, $type = 'editable')
 		{
 			$tables = Plugin::getConfig('tables');
 
-			if (empty($tables[$table]) ||
-					empty($tables[$table]['fields']) ||
-					empty($tables[$table]['fields'][$fieldname]) ||
-					!$tables[$table]['fields'][$fieldname]['editable']) return [];
+			switch ($type) {
+				case 'editable':
+				case 'orderable':
+
+					if (empty($tables[$table]) ||
+						empty($tables[$table]['fields']) ||
+						empty($tables[$table]['fields'][$fieldname]) ||
+						!$tables[$table]['fields'][$fieldname][$type]) return [];
+
+					break;
+			}
 
 			return $fieldname;
+		}
+
+
+		public static function getOrderDirFromQueryString()
+		{
+			return empty($_GET['order']) ? 'ASC' : (strtoupper($_GET['order']) === 'ASC' ? 'ASC' : 'DESC');
+		}
+
+
+		public static function getOrderByFromQueryString($table, $default = 'id')
+		{
+			if (empty($_GET['orderby'])) return $default;
+
+			return empty(self::verifyAllowedField($table, $_GET['orderby'], 'orderable')) ? $default : $_GET['orderby'];
 		}
 
 	}

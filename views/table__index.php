@@ -45,10 +45,7 @@
 					</select>
 					<input type="submit" name="filter_action" id="post-query-submit" class="button" value="Przefiltruj">
 				</div>
-				*/
-
-
-				?>
+			*/ ?>
 
 			<div class="alignleft actions">
 				<?= $vData['filters']; ?>
@@ -63,29 +60,31 @@
 					<?= $paginator->pagination() ?>
 				</span>
 			</div>
-			<?php /*<br class="clear">
-			<h2 class="screen-reader-text">Nawigacja listy wpisów</h2>
-			<div class="tablenav-pages">
-				<span class="displaying-num">7 pozycji</span>
-				<span class="pagination-links">
-					<span class="tablenav-pages-navspan" aria-hidden="true">«</span>
-					<span class="tablenav-pages-navspan" aria-hidden="true">‹</span>
-					<span class="paging-input">
-						<label for="current-page-selector" class="screen-reader-text">Bieżąca strona</label>
-						<input class="current-page" id="current-page-selector" type="text" name="paged" value="1" size="1" aria-describedby="table-paging">
-						<span class="tablenav-paging-text"> z <span class="total-pages">2</span></span>
+
+			<?php /*
+				<br class="clear">
+				<h2 class="screen-reader-text">Nawigacja listy wpisów</h2>
+				<div class="tablenav-pages">
+					<span class="displaying-num">7 pozycji</span>
+					<span class="pagination-links">
+						<span class="tablenav-pages-navspan" aria-hidden="true">«</span>
+						<span class="tablenav-pages-navspan" aria-hidden="true">‹</span>
+						<span class="paging-input">
+							<label for="current-page-selector" class="screen-reader-text">Bieżąca strona</label>
+							<input class="current-page" id="current-page-selector" type="text" name="paged" value="1" size="1" aria-describedby="table-paging">
+							<span class="tablenav-paging-text"> z <span class="total-pages">2</span></span>
+						</span>
+						<a class="next-page" href="http://budio.test/wp-admin/edit.php?post_type=producers&amp;mode=list&amp;paged=2">
+							<span class="screen-reader-text">Następna strona</span>
+							<span aria-hidden="true">›</span>
+						</a>
+						<span class="tablenav-pages-navspan" aria-hidden="true">»</span>
 					</span>
-					<a class="next-page" href="http://budio.test/wp-admin/edit.php?post_type=producers&amp;mode=list&amp;paged=2">
-						<span class="screen-reader-text">Następna strona</span>
-						<span aria-hidden="true">›</span>
-					</a>
-					<span class="tablenav-pages-navspan" aria-hidden="true">»</span>
-				</span>
-			</div>*/ ?>
+				</div>
+			*/ ?>
+
 			<br class="clear">
 		</div>
-
-
 		<h2 class="screen-reader-text">Lista wpisów</h2>
 		<table class="wp-list-table widefat fixeddd striped posts">
 			<thead>
@@ -104,10 +103,22 @@
 							<span class="sorting-indicator"></span></a>
 						</th>
 					*/ ?>
-
 					<?php foreach ($vData['tableFields'] as $key => $val): ?>
-						<th scope="col" id="column_<?= $key ?>" class="manage-column column-<?= $key ?>">
-							<?= $val['title'] ?>
+						<th scope="col" id="column_<?= $key ?>"
+							class="manage-column column-<?= $key ?>
+								<?= $vData['templateHelper']->getOrderBeingChosenClass($key, 'th') ?>
+								<?= $val['orderable'] ? 'sortable' : '' ?>
+								<?= (!empty($_GET['order']) && strtolower($_GET['order']) == 'asc') ? 'asc' : 'desc' ?>
+							">
+							<?php if ($val['orderable']): ?>
+								<a href="<?= $vData['templateHelper']->getNewOrderLink($key) ?>"
+									class="<?= $vData['templateHelper']->getOrderBeingChosenClass($key) ?>">
+									<span><?= $val['title'] ?></span>
+									<?= $vData['templateHelper']->getOrderIndicator($key) ?>
+								</a>
+							<?php else: ?>
+								<?= $val['title'] ?>
+							<?php endif ?>
 						</th>
 					<?php endforeach ?>
 				</tr>
@@ -149,11 +160,10 @@
 						<td class="date column-date" data-colname="Data">Opublikowany<br><abbr title="2018-09-17 10:56:43">17.09.2018</abbr></td>
 					</tr>
 				*/ ?>
-
 				<?php foreach ($items as $item): ?>
 					<tr id="post-<?= key($item) ?>" class="iedit author-other level-0 status-publish has-post-thumbnail hentry" data-rowwrapper>
 						<?php foreach ($item as $ckey => $cval): ?>
-							<td class="date column-<?= $ckey ?>" data-colname="<?= $ckey ?>" contenteditable="<?= $editable_fields[$ckey] ? 'true' : 'false' ?>" <?= $editable_fields[$ckey] ? ' data-rowid="'.$item['id'].'" ' : '' ?>>
+							<td class="date column-<?= $ckey ?>" data-colname="<?= $ckey ?>" contenteditable="<?= $vData['editableFields'][$ckey] ? 'true' : 'false' ?>" <?= $vData['editableFields'][$ckey] ? ' data-rowid="'.$item['id'].'" ' : '' ?>>
 								<?php if (!empty($cval['link'])): ?>
 									<a href="<?= $cval['link'] ?>" target="new"><?= is_array($cval) ? $cval['value'] : $cval ?></a>
 								<?php else: ?>
