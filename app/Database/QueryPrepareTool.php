@@ -33,6 +33,35 @@
 		}
 
 
+		public static function getSearchWhereFilter($table, $search)
+		{
+			$search = preg_replace('/[^\p{L}0-9 ]/u', '', $search);
+
+			$tables = Plugin::getConfig('tables');
+			if (empty($tables[$table]) || empty($tables[$table]['fields'])) return;
+
+			$where_arr	= [];
+			$where		= ' 1=0 ';
+
+			foreach ($tables[$table]['fields'] as $fieldname => $field)
+			{
+				if ($field['searchable'])
+				{
+					if (in_array($field['cast'], ['int', 'float']))
+					{
+						$where .= " || {$fieldname} = '%{$search}%' ";
+					}
+					else
+					{
+						$where .= " || {$fieldname} LIKE '%{$search}%' ";
+					}
+				}
+			}
+
+			return " ({$where}) ";
+		}
+
+
 		public static function getGetWhereFilter($table, $filters_get)
 		{
 			if (empty($filters_get)) return;

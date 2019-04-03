@@ -12,12 +12,12 @@
 		</ul>
 	*/ ?>
 	<form id="posts-filter" method="get">
+		<p class="search-box">
+			<label class="screen-reader-text" for="post-search-input">Szukaj:</label>
+			<input type="search" id="post-search-input" name="s" value="<?= $_GET['s'] ?? '' ?>">
+			<input type="submit" id="search-submit" class="button" value="Szukaj">
+		</p>
 		<?php /*
-			<p class="search-box">
-				<label class="screen-reader-text" for="post-search-input">Szukaj:</label>
-				<input type="search" id="post-search-input" name="s" value="">
-				<input type="submit" id="search-submit" class="button" value="Szukaj">
-			</p>
 			<input type="hidden" name="post_status" class="post_status_page" value="all">
 			<input type="hidden" name="post_type" class="post_type_page" value="producers">
 			<input type="hidden" id="_wpnonce" name="_wpnonce" value="778b09191e"><input type="hidden" name="_wp_http_referer" value="/wp-admin/edit.php?post_type=producers&amp;mode=list">

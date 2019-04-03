@@ -30,15 +30,22 @@
 			if (empty($tablesConfig[$table])) die('config for table not found, exiting...');
 
 			$get_filters = empty($_GET[Plugin::prefix() . 'filter']) ? null : $_GET[Plugin::prefix() . 'filter'];
+			$search_filter = empty($_GET['s']) ? null : $_GET['s'];
 
-			$where			= " WHERE 1=1 ";
-			$where_get		= QueryPrepareTool::getGetWhereFilter($table, $get_filters);
-			$where_get		= empty($where_get) ? ' 2=2 ' : $where_get;
-			$where_base		= QueryPrepareTool::getBaseWhereFilter($table);
-			$where_base		= $where_base ?? ' 3=3 ';
+			$where				= " WHERE 1=1 ";
+
+			$where_filters		= QueryPrepareTool::getGetWhereFilter($table, $get_filters);
+			$where_filters		= empty($where_filters) ? ' 2=2 ' : $where_filters;
+
+			$where_search		= QueryPrepareTool::getSearchWhereFilter($table, $search_filter);
+			$where_search		= empty($where_search) ? ' 3=3 ' : $where_search;
+
+			$where_base			= QueryPrepareTool::getBaseWhereFilter($table);
+			$where_base			= $where_base ?? ' 4=4 ';
 
 			$where .= " && {$where_base}";
-			$where .= " && {$where_get}";
+			$where .= " && {$where_filters}";
+			$where .= " && {$where_search}";
 
 			$offset = (intval($_GET['paged'] ?? 1) - 1) * $perPage;
 
