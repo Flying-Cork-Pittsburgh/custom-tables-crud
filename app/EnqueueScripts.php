@@ -8,10 +8,10 @@
 		function __construct() {
 
 			// Enqueue frontend/backend scripts
-			add_action('wp_enqueue_scripts', array($this, 'enqueueFrontendScripts'));
-			add_action('admin_enqueue_scripts', array($this, 'enqueueAdminScripts'));
-			add_action('admin_head', array($this, 'injectAdminJavascriptSettings'));
-			// add_action('wp_head', array($this, 'injectJavascriptSettings'), 1);
+			add_action('wp_enqueue_scripts',			array($this, 'enqueueFrontendScripts'));
+			add_action('admin_enqueue_scripts',		array($this, 'enqueueAdminScripts'));
+			add_action('admin_head',					array($this, 'injectAdminJavascriptSettings'));
+			add_action('wp_head',						array($this, 'injectFrontdendJavascriptSettings'), 1);
 
 			// Inject plugin settings into page head
 			// $this->injectJavascriptSettings();
@@ -32,38 +32,39 @@
 			*/
 		public function enqueueFrontendScripts() {
 
-			// Enqueue script dependencies
-			// $this->enqueue_common_scripts();
+			// Enqueuing custom CSS for child theme (Twentysixteen was used for testing)
+			wp_enqueue_style(
+				$this->getConfig('pluginSlug'),
+				$this->getConfig('pluginUrl') . '/assets/css/' . 'styles_frontend.css',
+				null,
+				$this->getConfig('pluginVersion'));
 
-			// // Enqueuing custom CSS for child theme (Twentysixteen was used for testing)
-			// wp_enqueue_style('custom-tables-crud', Helpers::get_script_url('assets/css/custom-tables-crud.css'), null, Helpers::get_script_version('assets/css/custom-tables-crud.css'));
-
-			// // Enqueue frontend JavaScript
-			// wp_enqueue_script('custom-tables-crud', Helpers::get_script_url('assets/js/custom-tables-crud.js'), array('jquery', 'jquery-waituntilexists'), Helpers::get_script_version('assets/js/custom-tables-crud.js'), true );
-			// wp_localize_script('custom-tables-crud', $this->prefix('ajax_filter_params'), array('ajax_url' => admin_url('admin-ajax.php')) );
-
+			// Enqueue frontend JavaScript
+			wp_enqueue_script(
+				$this->getConfig('pluginSlug'),
+				$this->getConfig('pluginUrl') . '/assets/js/' . 'scripts_frontend.js',
+				null,
+				$this->getConfig('pluginVersion'),
+				true);
 		}
 
 		/**
 			* Enqueue scripts used in WP admin interface
 			* @since 0.1.0
 			*/
-		public function enqueueAdminScripts() {
-
-			// Enqueue script dependencies
-			// $this->enqueue_common_scripts();
-
+		public function enqueueAdminScripts()
+		{
 			wp_enqueue_style(
 				$this->getConfig('pluginSlug'),
 				// $this->getConfig('pluginUrl') . '/assets/css/' . $this->getConfig('pluginSlug') . '-admin.min.css',
-				$this->getConfig('pluginUrl') . '/assets/css/' . 'styles.css',
+				$this->getConfig('pluginUrl') . '/assets/css/' . 'styles_admin.css',
 				null,
 				$this->getConfig('pluginVersion'));
 
 			wp_enqueue_script(
 				$this->getConfig('pluginSlug'),
 				// $this->getConfig('pluginUrl') . '/assets/js/' . $this->getConfig('pluginSlug') . '-admin.min.css',
-				$this->getConfig('pluginUrl') . '/assets/js/' . 'scripts.js',
+				$this->getConfig('pluginUrl') . '/assets/js/' . 'scripts_admin.js',
 				null,
 				$this->getConfig('pluginVersion'),
 				true);
@@ -75,34 +76,12 @@
 		}
 
 		/**
-			* Enqueue scripts common to the public site and WP Admin
-			* @since 0.3.0
-			*/
-		// private function enqueue_common_scripts() {
-
-		// 	// Enqueue common (frontend/backend) JavaScript
-		// 	wp_enqueue_script('jquery-waituntilexists', Helpers::get_script_url('assets/components/jq.waituntilexists/jquery.waitUntilExists.min.js', false ), array('jquery'), '0.1.0');
-
-		// }
-
-		/**
-			* Enqueue Font Awesome
-			* @since 0.1.0
-			*/
-		// public function enqueue_font_awesome() {
-
-		// 	wp_enqueue_style('font-awesome', 'https://use.fontawesome.com/releases/v5.6.1/css/all.css', null, null );
-		// 	wp_enqueue_style('font-awesome-shims', 'https://use.fontawesome.com/releases/v5.6.1/css/v4-shims.css', [ 'font-awesome' ], null );
-
-		// }
-
-		/**
 			* Inject JavaScript settings into header. You can add any variables/settings
 			*    that you want to make available to your JavaScripts.
 			* @since 0.3.0
 			*/
-		public function injectAdminJavascriptSettings() {
-
+		public function injectAdminJavascriptSettings()
+		{
 			$lines = [
 				'var ctcrud = {};',
 				'ctcrud.ajax_url = \'' . admin_url('admin-ajax.php') . '?action=ctcrud_field_update\';',
@@ -115,6 +94,11 @@
 				echo "{$line}\n";
 			}
 			echo "</script>;\n";
+		}
 
+
+		public function injectFrontdendJavascriptSettings()
+		{
+			# code...
 		}
 	}

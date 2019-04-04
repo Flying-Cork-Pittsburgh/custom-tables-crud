@@ -20,24 +20,36 @@ mix.options({
 	publicPath: ('./')
 });
 
-mix.js(
+mix
+.js(
 	[
 		'src/js/vendors/helpers/domExtensions.js',
 		'src/js/vendors/polyfills/element/closest.js',
 		'src/js/vendors/polyfills/object/keys.js',
-		'src/js/classes/_Core.js',
+		'src/js/classes_admin/_Core.js',
 		// 'src/vue/app.js'
 	],
-	'assets/js/scripts.js'
+	'assets/js/scripts_admin.js'
+)
+.js(
+	[
+		'src/js/classes_frontend/_Core.js',
+	],
+	'assets/js/scripts_frontend.js'
 );
 //.extract(['vue', 'gsap'])				// if we want ventors in a separate file for better caching
 //.copyDirectory('assets/js/'/* , 'cms/dist/' */);
 // version();
 
 
-mix.sass(
-	'src/scss/styles.scss',
-	'assets/css/styles.css'
+mix
+.sass(
+	'src/scss/styles_admin.scss',
+	'assets/css/styles_admin.css'
+)
+.sass(
+	'src/scss/styles_frontend.scss',
+	'assets/css/styles_frontend.css'
 );
 
 // Full API

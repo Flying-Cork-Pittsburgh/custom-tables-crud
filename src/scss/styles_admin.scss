@@ -2,22 +2,22 @@
 
 // @import 'helpers/reset';
 @import 'helpers/vars';
-@import 'helpers/functions';
+// @import 'helpers/functions';
 @import 'helpers/mixins';
-@import 'helpers/browser';
-@import 'helpers/placeholder';
+// @import 'helpers/browser';
+// @import 'helpers/placeholder';
 @import 'helpers/parent';
 @import 'helpers/rwd';
-@import 'helpers/rtl';
+// @import 'helpers/rtl';
 
 @import 'helpers/colors';
 // @import 'helpers/animations';
 // @import 'helpers/fontFace';
 // @import 'helpers/fonts';
-@import 'helpers/icons';
+// @import 'helpers/icons';
 
-@import 'elements/editable-field';
-@import 'elements/column-order';
+@import 'admin/editable-field';
+@import 'admin/column-order';
 
 
 // html {

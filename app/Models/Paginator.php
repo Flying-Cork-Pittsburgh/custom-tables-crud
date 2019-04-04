@@ -46,19 +46,19 @@ class Paginator
 	################################
 	# PAGINATION TEMPLATE DEFAULTS #
 	################################
-	public $tpl_first = ' <a class="first-page" href="{link}"><span class="screen-reader-text">Pierwsza strona</span>
+	public $tpl_first = ' <a class="first-page button" href="{link}"><span class="screen-reader-text">Pierwsza strona</span>
 	<span aria-hidden="true">«</span></a> ';
 
-	public $tpl_prev = ' <a class="prev-page" href="{link}"><span class="screen-reader-text">Poprzednia strona</span>
+	public $tpl_prev = ' <a class="prev-page button" href="{link}"><span class="screen-reader-text">Poprzednia strona</span>
 	<span aria-hidden="true">‹</span></a> ';
 
-	public $tpl_next = ' <a class="next-page" href="{link}"><span class="screen-reader-text">Następna strona</span>
+	public $tpl_next = ' <a class="next-page button" href="{link}"><span class="screen-reader-text">Następna strona</span>
 	<span aria-hidden="true">›</span></a> ';
 
-	public $tpl_last = ' <a class="last-page" href="{link}"><span class="screen-reader-text">Ostatnia strona</span>
+	public $tpl_last = ' <a class="last-page button" href="{link}"><span class="screen-reader-text">Ostatnia strona</span>
 	<span aria-hidden="true">»</span></a> ';
 
-	public $tpl_page_nums = ' <a class="next-page" href="{link}"><span class="screen-reader-text">Strona</span>
+	public $tpl_page_nums = ' <a class="next-page button" href="{link}"><span class="screen-reader-text">Strona</span>
 	<span aria-hidden="true" class="current-page">{page}</span></a> ';
 
 	public $tpl_cur_page_num = ' <span class="paging-input"><label for="current-page-selector" class="screen-reader-text">Bieżąca strona</label><input class="current-page" id="current-page-selector" type="text" name="paged" value="{page}" size="1" aria-describedby="table-paging"><span class="tablenav-paging-text"> z <span class="total-pages">{all}</span></span></span> ';

@@ -1,6 +1,6 @@
 {
-    "/assets/js/scripts.js": "/assets/js/scripts.js",
-    "/assets/css/styles.css": "/assets/css/styles.css",
-    "/assets/js/scripts.js.map": "/assets/js/scripts.js.map",
-    "/assets/css/styles.css.map": "/assets/css/styles.css.map"
+    "/assets/js/scripts_admin.js": "/assets/js/scripts_admin.js",
+    "/assets/css/styles_admin.css": "/assets/css/styles_admin.css",
+    "/assets/css/styles_frontend.css": "/assets/css/styles_frontend.css",
+    "/assets/js/scripts_frontend.js": "/assets/js/scripts_frontend.js"
 }
