@@ -10,6 +10,8 @@
 	// use PiotrKu\CustomTablesCrud\Database\DatabaseConnection;
 	use PiotrKu\CustomTablesCrud\Database\DatabaseConnectionFactory;
 	use PiotrKu\CustomTablesCrud\AjaxHandler;
+	use PiotrKu\CustomTablesCrud\OptionsPageManager;
+
 
 
 	class Plugin {
@@ -43,10 +45,10 @@
 				'dependencies' 		=>
 									[
 										'php' => '7.0',
-										'wp' => '4.8',
+										'wp' => '5.0',
 									],
 				'connection'			=> null,
-				'perPage'				=> 10,
+				'perPage'				=> get_option('ctcrud_per_page') ?? 20,
 				'tables'					=>
 									[
 										'wholesaler_prods' => [
@@ -340,6 +342,7 @@
 
 			// Enqueue scripts and stylesheets
 			new EnqueueScripts();
+			new OptionsPageManager();
 
 			// Perform core plugin logic
 			// new Core();
