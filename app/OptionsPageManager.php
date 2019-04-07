@@ -14,6 +14,24 @@
 		{
 			$this->pluginPage = $this->getConfig('prefix') . '-settings';
 
+			$this->basic_settings = [
+					[
+						'label'		=> __('Rows per page', 'ctcrud'),
+						'name'		=> 'per_page',
+						'default'	=> '23',
+					],
+					[
+						'label'		=> __('Search enabled', 'ctcrud'),
+						'name'		=> 'search_enabled',
+						'default'	=> 'true',
+					],
+					[
+						'label'		=> __('Filters enabled', 'ctcrud'),
+						'name'		=> 'filters_enabled',
+						'default'		=> 'true',
+					]
+			];
+
 			add_action('admin_menu', [$this, 'RegisterOptionsPage']);
 			add_action('admin_init', [$this, 'SettingsInit']);
 		}
@@ -22,43 +40,42 @@
 
 		public function SettingsInit()
 		{
-
 			register_setting(
-				$this->pluginPage,		// option_group
-				'ctcrud_settings'			// option_name
-			);
-
-			add_settings_section(
-				'ctcrud_pluginPage_section',
-				__('Your section description', 'ctcrud'),
-				[$this, 'ctcrud_settings_section_callback'],
-				$this->pluginPage
-			);
-
-			add_settings_field(
-				'ctcrud_text_field_0',
-				__('Settings field description', 'ctcrud'),
-				[$this, 'ctcrud_text_field_0_render'],
-				$this->pluginPage,
-				'ctcrud_pluginPage_section'
-			);
-
-			add_settings_field(
-				'ctcrud_text_field_1',
-				__('Settings field description', 'ctcrud'),
-				[$this, 'ctcrud_text_field_1_render'],
-				$this->pluginPage,
-				'ctcrud_pluginPage_section'
-			);
-
-
-
-			register_setting(
-				$this->pluginPage,		// option_group
-				'ctcrud_per_page',			// option_name
+				$this->pluginPage,			// option_group	- must match settings_field($options_group)
+				'ctcrud_basic_settings',	// option_name		- stored in DB
 				[
 					'type'					=> 'integer',
-					// 'group'					=> $this->getConfig('prefix').'_options_group',
+					'description'			=> 'Table rows per page',
+					'sanitize_callback'	=> [$this, 'sanitizeBasicSettings'],		// sanitize_integer_field_callback
+					'show_in_rest'			=> false,
+					'default'				=> 20,
+				]
+			);
+
+
+			foreach ($this->basic_settings as $basic_setting)
+			{
+				add_settings_field(
+					$basic_setting['name'],
+					$basic_setting['label'], //__('Basic settings', 'ctcrud'),
+					[$this, 'ctcrud_basic_settings_render'],
+					$this->pluginPage,									// must match do_settings_sections($page) & add_settings_section($page)
+					'ctcrud_pluginPage_section',						// must match add_settings_section($id)
+					[															// passed to callback function
+						'name'		=> $basic_setting['name'],
+						'default'	=> $basic_setting['default'],
+					]
+				);
+			}
+
+
+
+
+			register_setting(
+				$this->pluginPage,			// option_group	- must match settings_field($options_group)
+				'ctcrud_per_page',			// option_name		- stored in DB
+				[
+					'type'					=> 'integer',
 					'description'			=> 'Table rows per page',
 					'sanitize_callback'	=> [$this, 'sanitizeInteger'],		// sanitize_integer_field_callback
 					'show_in_rest'			=> false,
@@ -68,51 +85,53 @@
 
 			add_settings_field(
 				'ctcrud_per_page',
-				__('Rows per page', 'ctcrud'),
+				__('Rows per page ()', 'ctcrud'),
 				[$this, 'ctcrud_per_page_render'],
 				$this->pluginPage,
-				'ctcrud_pluginPage_section'
+				'ctcrud_pluginPage_section',
+				[
+					'label'	=> __('Rows per page', 'ctcrud'),
+					'name'	=> 'ctcrud_per_page',
+					'value'	=> '- field value -',
+				]
 			);
 		}
 
 
 
-		public function ctcrud_per_page_render()
+		public function ctcrud_basic_settings_render($opts)
 		{
+			$values = get_option('ctcrud_basic_settings');
 
-			$option = get_option('ctcrud_per_page');
+			/* opts
+				[name] => per_page
+				[default] => 23
+			*/
+
+			/* values
+				[per_page] => 25
+				[search_enabled] => true
+				[filters_enabled] => false
+			*/
+
 			?>
-			<input type='text' name='ctcrud_per_page' value='<?= $option ?>'>
-			<?php
-
-		}
-
-
-		public function ctcrud_text_field_0_render()
-		{
-
-			$options = get_option('ctcrud_settings');
-			?>
-			<input type='text' name='ctcrud_settings[ctcrud_text_field_0]' value='<?php echo $options['ctcrud_text_field_0']; ?>'>
-			<?php
-
-		}
-
-
-		public function ctcrud_text_field_1_render()
-		{
-
-			$options = get_option('ctcrud_settings');
-			?>
-			<input type='text' name='ctcrud_settings[ctcrud_text_field_1]' value='<?php echo $options['ctcrud_text_field_1']; ?>'>
+			<input type='text'
+				name='ctcrud_basic_settings[<?= esc_attr($opts['name']) ?>]'
+				value='<?= esc_attr($values[$opts['name']]) ?>'>
 			<?php
 		}
 
 
 
-		public function ctcrud_settings_section_callback()
+		public function ctcrud_per_page_render($field)
 		{
-			echo __('This section description', 'ctcrud');
+			$value = get_option($field['name']);
+
+			?>
+			<label><?php /* $field['label'] */ ?>
+				<input type='text' name='<?= esc_attr($field['name']) ?>' value='<?= esc_attr($value) ?>'>
+			</label>
+			<?php
 		}
 
 
@@ -135,20 +154,57 @@
 			?>
 			<form action='options.php' method='post'>
 				<h2><?= $this->getConfig('shortName') ?></h2>
+				<?php /* settings_errors(); */ ?>
 				<?php
+					echo '___________________';
 					settings_fields($this->pluginPage );
-					do_settings_sections($this->pluginPage );
+					// echo '========== outputs all sections =========';
+					// do_settings_sections($this->pluginPage);
+					// echo '---------- output specific section ---------';
+					echo "<table>";
+					do_settings_fields($this->pluginPage, 'ctcrud_pluginPage_section');
+					echo "</table>";
+					echo '..........................';
 					submit_button();
+					echo '====================';
 				?>
 			</form>
 			<?php
 		}
 
 
+		public function sanitizeBasicSettings($el)
+		{
+			echo '<pre>';
+			print_r($this->basic_settings);
+			print_r($el);
+			echo '</pre>';
+			die('group sanitizer');
+		}
 
 
 		public function sanitizeInteger($el)
 		{
-			return intval($el);
+			// if we would know the option name we would
+			// $output = get_option( 'my-setting' );
+			// if (is_ok( $input['email']))
+			// 		$output['email'] = $input['email'];
+	  		// else
+			// 		add_settings_error( 'my-settings', 'invalid-email', 'You have entered an invalid e-mail address.' );
+			// return $output;
+
+			$el = trim($el);
+
+			if (empty($el) || intval($el) === 0 || intval($el) != $el) {
+				$message = __( 'Validation error - value should be an integer > 0', $this->getConfig('prefix'));
+				$type = 'error';
+			} else {
+				$message = __( 'Successfully saved', $this->getConfig('prefix'));
+				$type = 'updated';
+			}
+			add_settings_error( 'ctcrud_per_page', esc_attr( 'settings_updated' ), $message, $type );
+
+			// return $type == 'error' ? null : intval($el);
+			return $type == 'error' ? null : intval($el);
 		}
 	}

@@ -49,6 +49,8 @@
 									],
 				'connection'			=> null,
 				'perPage'				=> get_option('ctcrud_per_page') ?? 20,
+				'searchEnabled'		=> get_option('ctcrud_search_enabled') ?? true,
+				'filtersEnabled'		=> get_option('ctcrud_filters_enabled') ?? true,
 				'tables'					=>
 									[
 										'wholesaler_prods' => [
