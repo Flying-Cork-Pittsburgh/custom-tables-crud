@@ -60,9 +60,12 @@
 					$basic_setting['label'], //__('Basic settings', 'ctcrud'),
 					[$this, 'ctcrud_basic_settings_render'],
 					$this->pluginPage,									// must match do_settings_sections($page) & add_settings_section($page)
-					'ctcrud_pluginPage_section',						// must match add_settings_section($id)
+					'ctcrud_basic_settings_section',					// must match add_settings_section($id)
 					[															// passed to callback function
+						'label_for'	=> $basic_setting['name'],
+						'id'			=> $basic_setting['name'],
 						'name'		=> $basic_setting['name'],
+						'class'		=> $this->prefix('__fieldWrapper--') . $basic_setting['name'],
 						'default'	=> $basic_setting['default'],
 					]
 				);
@@ -71,30 +74,30 @@
 
 
 
-			register_setting(
-				$this->pluginPage,			// option_group	- must match settings_field($options_group)
-				'ctcrud_per_page',			// option_name		- stored in DB
-				[
-					'type'					=> 'integer',
-					'description'			=> 'Table rows per page',
-					'sanitize_callback'	=> [$this, 'sanitizeInteger'],		// sanitize_integer_field_callback
-					'show_in_rest'			=> false,
-					'default'				=> 20,
-				]
-			);
+			// register_setting(
+			// 	$this->pluginPage,			// option_group	- must match settings_field($options_group)
+			// 	'ctcrud_per_page',			// option_name		- stored in DB
+			// 	[
+			// 		'type'					=> 'integer',
+			// 		'description'			=> 'Table rows per page',
+			// 		'sanitize_callback'	=> [$this, 'sanitizeInteger'],		// sanitize_integer_field_callback
+			// 		'show_in_rest'			=> false,
+			// 		'default'				=> 20,
+			// 	]
+			// );
 
-			add_settings_field(
-				'ctcrud_per_page',
-				__('Rows per page ()', 'ctcrud'),
-				[$this, 'ctcrud_per_page_render'],
-				$this->pluginPage,
-				'ctcrud_pluginPage_section',
-				[
-					'label'	=> __('Rows per page', 'ctcrud'),
-					'name'	=> 'ctcrud_per_page',
-					'value'	=> '- field value -',
-				]
-			);
+			// add_settings_field(
+			// 	'ctcrud_per_page',
+			// 	__('Rows per page ()', 'ctcrud'),
+			// 	[$this, 'ctcrud_per_page_render'],
+			// 	$this->pluginPage,
+			// 	'ctcrud_basic_settings_section',
+			// 	[
+			// 		'label'	=> __('Rows per page', 'ctcrud'),
+			// 		'name'	=> 'ctcrud_per_page',
+			// 		'value'	=> '- field value -',
+			// 	]
+			// );
 		}
 
 
@@ -102,6 +105,7 @@
 		public function ctcrud_basic_settings_render($opts)
 		{
 			$values = get_option('ctcrud_basic_settings');
+
 
 			/* opts
 				[name] => per_page
@@ -116,6 +120,7 @@
 
 			?>
 			<input type='text'
+				id="<?= esc_attr($opts['name']) ?>"
 				name='ctcrud_basic_settings[<?= esc_attr($opts['name']) ?>]'
 				value='<?= esc_attr($values[$opts['name']]) ?>'>
 			<?php
@@ -123,16 +128,18 @@
 
 
 
+		/*
 		public function ctcrud_per_page_render($field)
 		{
 			$value = get_option($field['name']);
 
 			?>
-			<label><?php /* $field['label'] */ ?>
+			<label>
 				<input type='text' name='<?= esc_attr($field['name']) ?>' value='<?= esc_attr($value) ?>'>
 			</label>
 			<?php
 		}
+		*/
 
 
 
@@ -151,23 +158,34 @@
 
 		public function RenderOptionsPage()
 		{
+			if (isset($_GET[ 'tab' ])) {
+				$active_tab = $_GET['tab'];
+		  	}
 			?>
+			<h2><?= $this->getConfig('shortName') ?></h2>
+			<h2 class="nav-tab-wrapper">
+				<a href="?page=ctcrud-settings&tab=ctcrud_basic_settings_section"
+					class="nav-tab <?php echo $active_tab == 'ctcrud_basic_settings_section' ? 'nav-tab-active' : ''; ?>">Basic Options</a>
+				<a href="?page=ctcrud-settings&tab=ctcrud_tables_settings_section"
+					class="nav-tab <?php echo $active_tab == 'ctcrud_tables_settings_section' ? 'nav-tab-active' : ''; ?>">Table Configuration</a>
+			</h2>
+
 			<form action='options.php' method='post'>
-				<h2><?= $this->getConfig('shortName') ?></h2>
 				<?php /* settings_errors(); */ ?>
+				<?php settings_fields($this->pluginPage) ?>
+				<table>
+				<?php do_settings_fields($this->pluginPage, 'ctcrud_basic_settings_section') ?>
+				</table>
+
 				<?php
-					echo '___________________';
-					settings_fields($this->pluginPage );
 					// echo '========== outputs all sections =========';
 					// do_settings_sections($this->pluginPage);
 					// echo '---------- output specific section ---------';
-					echo "<table>";
-					do_settings_fields($this->pluginPage, 'ctcrud_pluginPage_section');
-					echo "</table>";
-					echo '..........................';
-					submit_button();
-					echo '====================';
+					// echo "<table>";
+					// do_settings_fields($this->pluginPage, 'ctcrud_basic_settings_section');
+					// echo "</table>";
 				?>
+				<?php submit_button() ?>
 			</form>
 			<?php
 		}
@@ -180,6 +198,7 @@
 			print_r($el);
 			echo '</pre>';
 			die('group sanitizer');
+			return $el;
 		}
 
 
