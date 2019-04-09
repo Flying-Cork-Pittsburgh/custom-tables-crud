@@ -4,6 +4,8 @@
 
 	use PiotrKu\CustomTablesCrud\Plugin;
 
+	// https://code.tutsplus.com/tutorials/the-wordpress-settings-api-part-5-tabbed-navigation-for-settings--wp-24971
+
 
 	class OptionsPageManager extends Plugin {
 
@@ -15,20 +17,28 @@
 			$this->pluginPage = $this->getConfig('prefix') . '-settings';
 
 			$this->basic_settings = [
-					[
+					'per_page' => [
 						'label'		=> __('Rows per page', 'ctcrud'),
 						'name'		=> 'per_page',
+						'fieldtype'	=> 'text',
+						'datatype'	=> 'unsigned',
 						'default'	=> '23',
 					],
-					[
+					'search_enabled' => [
 						'label'		=> __('Search enabled', 'ctcrud'),
 						'name'		=> 'search_enabled',
-						'default'	=> 'true',
+						'fieldtype'	=> 'radio',
+						'datatype'	=> 'boolean',
+						'values'		=> [0 => 'no', 1 => 'yes'],
+						'default'	=> 1,
 					],
-					[
+					'filters_enabled' => [
 						'label'		=> __('Filters enabled', 'ctcrud'),
 						'name'		=> 'filters_enabled',
-						'default'		=> 'true',
+						'fieldtype'	=> 'radio',
+						'datatype'	=> 'boolean',
+						'values'		=> [0 => 'no', 1 => 'yes'],
+						'default'	=> 1,
 					]
 			];
 
@@ -64,6 +74,8 @@
 					[															// passed to callback function
 						'label_for'	=> $basic_setting['name'],
 						'id'			=> $basic_setting['name'],
+						'type'		=> $basic_setting['fieldtype'],
+						'values'		=> $basic_setting['values'] ?? null,
 						'name'		=> $basic_setting['name'],
 						'class'		=> $this->prefix('__fieldWrapper--') . $basic_setting['name'],
 						'default'	=> $basic_setting['default'],
@@ -118,6 +130,11 @@
 				[filters_enabled] => false
 			*/
 
+			// echo '<pre>';
+			// print_r($opts);
+			// echo '</pre>';
+			// die('');
+
 			?>
 			<input type='text'
 				id="<?= esc_attr($opts['name']) ?>"
@@ -158,9 +175,7 @@
 
 		public function RenderOptionsPage()
 		{
-			if (isset($_GET[ 'tab' ])) {
-				$active_tab = $_GET['tab'];
-		  	}
+			$active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'ctcrud_basic_settings_section';
 			?>
 			<h2><?= $this->getConfig('shortName') ?></h2>
 			<h2 class="nav-tab-wrapper">
@@ -172,10 +187,17 @@
 
 			<form action='options.php' method='post'>
 				<?php /* settings_errors(); */ ?>
-				<?php settings_fields($this->pluginPage) ?>
-				<table>
-				<?php do_settings_fields($this->pluginPage, 'ctcrud_basic_settings_section') ?>
-				</table>
+
+				<?php if ($active_tab == 'ctcrud_basic_settings_section'): ?>
+					<?php settings_fields($this->pluginPage) ?>
+					<table>
+						<?php do_settings_fields($this->pluginPage, 'ctcrud_basic_settings_section') ?>
+					</table>
+				<?php elseif ($active_tab == 'ctcrud_tables_settings_section'): ?>
+					<table>table options here</table>
+				<?php else: ?>
+					<table>other options here</table>
+				<?php endif ?>
 
 				<?php
 					// echo '========== outputs all sections =========';
@@ -191,14 +213,44 @@
 		}
 
 
-		public function sanitizeBasicSettings($el)
+		public function sanitizeBasicSettings($els)
 		{
+			$out_els = [];
 			echo '<pre>';
-			print_r($this->basic_settings);
-			print_r($el);
-			echo '</pre>';
-			die('group sanitizer');
-			return $el;
+
+
+			foreach ((array)$els as $elkey => $el)
+			{
+				// print_r($elkey);
+				if (!isset($this->basic_settings[$elkey])) continue;
+
+				$el_cnf = $this->basic_settings[$elkey];
+
+				switch ($el_cnf['datatype']) {
+					case 'unsigned':
+						if (filter_var($el, FILTER_VALIDATE_INT) != $el)
+							add_settings_error('my-settings', 'invalid-integer',
+									'You have a value that is not an unsigned integer.<br>Concerns field labeled: ' . $el_cnf['label'], 'error');
+
+						$out_els[$elkey] = filter_var($el, FILTER_VALIDATE_INT) ? filter_var($el, FILTER_VALIDATE_INT) : $el_cnf['default'];
+						break;
+
+					case 'boolean':
+						$out_els[$elkey] = filter_var($el, FILTER_VALIDATE_BOOLEAN) ? 1 : 0;
+						break;
+				}
+				//switch ()
+			}
+
+
+			// print_r($this->basic_settings);
+			// print_r($out_els);
+			// echo '</pre>';
+			// die('group sanitizer');
+
+
+
+			return $out_els;
 		}
 
 
