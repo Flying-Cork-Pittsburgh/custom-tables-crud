@@ -316,6 +316,8 @@
 				return;
 			}
 
+			new CustomSettingsGetter();
+
 			// Load table setup
 			// new Models\TableStructureLoader();
 

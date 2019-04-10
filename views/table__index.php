@@ -12,11 +12,13 @@
 		</ul>
 	*/ ?>
 	<form id="posts-filter" method="get">
-		<p class="search-box">
-			<label class="screen-reader-text" for="post-search-input">Szukaj:</label>
-			<input type="search" id="post-search-input" name="s" value="<?= $_GET['s'] ?? '' ?>">
-			<input type="submit" id="search-submit" class="button" value="Szukaj">
-		</p>
+		<?php if ($searchEnabled): ?>
+			<p class="search-box">
+				<label class="screen-reader-text" for="post-search-input">Szukaj:</label>
+				<input type="search" id="post-search-input" name="s" value="<?= $_GET['s'] ?? '' ?>">
+				<input type="submit" id="search-submit" class="button" value="Szukaj">
+			</p>
+		<?php endif ?>
 		<?php /*
 			<input type="hidden" name="post_status" class="post_status_page" value="all">
 			<input type="hidden" name="post_type" class="post_type_page" value="producers">
@@ -48,8 +50,10 @@
 			*/ ?>
 
 			<div class="alignleft actions">
-				<?= $vData['filters']; ?>
-				<input type="submit" name="filter_action" id="post-query-submit" class="button" value="Przefiltruj">
+				<?php if ($filtersEnabled): ?>
+					<?= $vData['filters']; ?>
+					<input type="submit" name="filter_action" id="post-query-submit" class="button" value="Przefiltruj">
+				<?php endif ?>
 				<input type="hidden" name="page" value="<?= $_GET['page'] ?? '' ?>">
 				<input type="hidden" name="paged" value="<?= $_GET['paged'] ?? '' ?>">
 			</div>

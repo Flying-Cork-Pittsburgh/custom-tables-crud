@@ -23,9 +23,13 @@
 
 		public static function renderPage($table)
 		{
-			$perPage			= Plugin::getConfig('perPage');
-			$pluginDir		= Plugin::getConfig('pluginDir');
-			$tablesConfig 	= Plugin::getConfig('tables');
+			$pluginDir			= Plugin::getConfig('pluginDir');
+
+			$perPage				= Plugin::getConfig('perPage');
+			$searchEnabled		= Plugin::getConfig('searchEnabled');
+			$filtersEnabled	= Plugin::getConfig('filtersEnabled');
+
+			$tablesConfig 		= Plugin::getConfig('tables');
 
 			if (empty($tablesConfig[$table])) die('config for table not found, exiting...');
 
@@ -71,6 +75,8 @@
 			$paginator = new Paginator($query, $perPage);
 
 			$vData = [
+				'searchEnabled'	=>	$searchEnabled,
+				'filtersEnabled'	=>	$filtersEnabled,
 				'pageTitle'			=>	$tablesConfig[$table]['pageTitle'] ?? '-',
 				'table'				=>	$table,
 				'tableFields'		=>	$tablesConfig[$table]['fields'],

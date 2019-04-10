@@ -17,25 +17,25 @@
 			$this->pluginPage = $this->getConfig('prefix') . '-settings';
 
 			$this->basic_settings = [
-					'per_page' => [
+					'perPage' => [
 						'label'		=> __('Rows per page', 'ctcrud'),
-						'name'		=> 'per_page',
+						'name'		=> 'perPage',
 						'fieldtype'	=> 'text',
 						'datatype'	=> 'unsigned',
 						'default'	=> '23',
 					],
-					'search_enabled' => [
+					'searchEnabled' => [
 						'label'		=> __('Search enabled', 'ctcrud'),
-						'name'		=> 'search_enabled',
-						'fieldtype'	=> 'radio',
+						'name'		=> 'searchEnabled',
+						'fieldtype'	=> 'checkbox',
 						'datatype'	=> 'boolean',
 						'values'		=> [0 => 'no', 1 => 'yes'],
 						'default'	=> 1,
 					],
-					'filters_enabled' => [
+					'filtersEnabled' => [
 						'label'		=> __('Filters enabled', 'ctcrud'),
-						'name'		=> 'filters_enabled',
-						'fieldtype'	=> 'radio',
+						'name'		=> 'filtersEnabled',
+						'fieldtype'	=> 'checkbox',
 						'datatype'	=> 'boolean',
 						'values'		=> [0 => 'no', 1 => 'yes'],
 						'default'	=> 1,
@@ -82,34 +82,6 @@
 					]
 				);
 			}
-
-
-
-
-			// register_setting(
-			// 	$this->pluginPage,			// option_group	- must match settings_field($options_group)
-			// 	'ctcrud_per_page',			// option_name		- stored in DB
-			// 	[
-			// 		'type'					=> 'integer',
-			// 		'description'			=> 'Table rows per page',
-			// 		'sanitize_callback'	=> [$this, 'sanitizeInteger'],		// sanitize_integer_field_callback
-			// 		'show_in_rest'			=> false,
-			// 		'default'				=> 20,
-			// 	]
-			// );
-
-			// add_settings_field(
-			// 	'ctcrud_per_page',
-			// 	__('Rows per page ()', 'ctcrud'),
-			// 	[$this, 'ctcrud_per_page_render'],
-			// 	$this->pluginPage,
-			// 	'ctcrud_basic_settings_section',
-			// 	[
-			// 		'label'	=> __('Rows per page', 'ctcrud'),
-			// 		'name'	=> 'ctcrud_per_page',
-			// 		'value'	=> '- field value -',
-			// 	]
-			// );
 		}
 
 
@@ -118,9 +90,18 @@
 		{
 			$values = get_option('ctcrud_basic_settings');
 
+			// echo '<pre>';
+			// print_r($opts);
+			// echo '</pre>';
+			// die('');
 
 			/* opts
+				[label_for] => per_page
+				[id] => per_page
+				[type] => text
+				[values] =>
 				[name] => per_page
+				[class] => ctcrud___fieldWrapper--per_page
 				[default] => 23
 			*/
 
@@ -130,34 +111,34 @@
 				[filters_enabled] => false
 			*/
 
-			// echo '<pre>';
-			// print_r($opts);
-			// echo '</pre>';
-			// die('');
+			switch ($opts['type'])
+			{
+				case 'text':
+					?>
+					<input type='<?= $opts['type'] ?>'
+						id="<?= esc_attr($opts['name']) ?>"
+						name='ctcrud_basic_settings[<?= esc_attr($opts['name']) ?>]'
+						value='<?= esc_attr($values[$opts['name']] ?? $opts['default']) ?>'>
+					<?php
+					break;
 
-			?>
-			<input type='text'
-				id="<?= esc_attr($opts['name']) ?>"
-				name='ctcrud_basic_settings[<?= esc_attr($opts['name']) ?>]'
-				value='<?= esc_attr($values[$opts['name']]) ?>'>
-			<?php
+				case 'checkbox':
+					?>
+					<input type='hidden'
+						name='ctcrud_basic_settings[<?= esc_attr($opts['name']) ?>]'
+						value='0'>
+					<input type='<?= $opts['type'] ?>'
+						id="<?= esc_attr($opts['name']) ?>"
+						name='ctcrud_basic_settings[<?= esc_attr($opts['name']) ?>]'
+						value='1' <?php checked($values[$opts['name']] ?? $opts['default'], 1) ?>>
+					<?php
+					break;
+
+				default:
+					die('no such field type');
+			}
+
 		}
-
-
-
-		/*
-		public function ctcrud_per_page_render($field)
-		{
-			$value = get_option($field['name']);
-
-			?>
-			<label>
-				<input type='text' name='<?= esc_attr($field['name']) ?>' value='<?= esc_attr($value) ?>'>
-			</label>
-			<?php
-		}
-		*/
-
 
 
 		public function RegisterOptionsPage()
@@ -216,12 +197,15 @@
 		public function sanitizeBasicSettings($els)
 		{
 			$out_els = [];
-			echo '<pre>';
+			$ctcrud_basic_settings = get_option('ctcrud_basic_settings');
 
-
+			/*
+				[per_page] => 22
+				[search_enabled] => 0
+				[filters_enabled] => 1
+			*/
 			foreach ((array)$els as $elkey => $el)
 			{
-				// print_r($elkey);
 				if (!isset($this->basic_settings[$elkey])) continue;
 
 				$el_cnf = $this->basic_settings[$elkey];
@@ -230,52 +214,25 @@
 					case 'unsigned':
 						if (filter_var($el, FILTER_VALIDATE_INT) != $el)
 							add_settings_error('my-settings', 'invalid-integer',
-									'You have a value that is not an unsigned integer.<br>Concerns field labeled: ' . $el_cnf['label'], 'error');
+									'You have entered a value that is not an unsigned integer. ('. $el_cnf['label'] . ')', 'error');
 
-						$out_els[$elkey] = filter_var($el, FILTER_VALIDATE_INT) ? filter_var($el, FILTER_VALIDATE_INT) : $el_cnf['default'];
+						$out_els[$elkey] = filter_var($el, FILTER_VALIDATE_INT) ?
+																			filter_var($el, FILTER_VALIDATE_INT) :
+																			$ctcrud_basic_settings[$elkey];
 						break;
 
 					case 'boolean':
 						$out_els[$elkey] = filter_var($el, FILTER_VALIDATE_BOOLEAN) ? 1 : 0;
 						break;
 				}
-				//switch ()
 			}
 
-
-			// print_r($this->basic_settings);
+			// echo '<pre>';
+			// print_r($els);
 			// print_r($out_els);
 			// echo '</pre>';
-			// die('group sanitizer');
-
-
+			// die('');
 
 			return $out_els;
-		}
-
-
-		public function sanitizeInteger($el)
-		{
-			// if we would know the option name we would
-			// $output = get_option( 'my-setting' );
-			// if (is_ok( $input['email']))
-			// 		$output['email'] = $input['email'];
-	  		// else
-			// 		add_settings_error( 'my-settings', 'invalid-email', 'You have entered an invalid e-mail address.' );
-			// return $output;
-
-			$el = trim($el);
-
-			if (empty($el) || intval($el) === 0 || intval($el) != $el) {
-				$message = __( 'Validation error - value should be an integer > 0', $this->getConfig('prefix'));
-				$type = 'error';
-			} else {
-				$message = __( 'Successfully saved', $this->getConfig('prefix'));
-				$type = 'updated';
-			}
-			add_settings_error( 'ctcrud_per_page', esc_attr( 'settings_updated' ), $message, $type );
-
-			// return $type == 'error' ? null : intval($el);
-			return $type == 'error' ? null : intval($el);
 		}
 	}
