@@ -10,7 +10,7 @@
 	// use PiotrKu\CustomTablesCrud\Database\DatabaseConnection;
 	use PiotrKu\CustomTablesCrud\Database\DatabaseConnectionFactory;
 	use PiotrKu\CustomTablesCrud\AjaxHandler;
-	use PiotrKu\CustomTablesCrud\OptionsPageManager;
+	use PiotrKu\CustomTablesCrud\OptionsPage\OptionsCore;
 
 
 
@@ -346,7 +346,7 @@
 
 			// Enqueue scripts and stylesheets
 			new EnqueueScripts();
-			new OptionsPageManager();
+			new OptionsCore();
 
 			// Perform core plugin logic
 			// new Core();

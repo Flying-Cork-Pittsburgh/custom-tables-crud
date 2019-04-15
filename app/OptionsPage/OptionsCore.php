@@ -1,13 +1,14 @@
 <?php
 
-	namespace PiotrKu\CustomTablesCrud;
+	namespace PiotrKu\CustomTablesCrud\OptionsPage;
 
 	use PiotrKu\CustomTablesCrud\Plugin;
+	use PiotrKu\CustomTablesCrud\OptionsPage\DBHelper;
 
 	// https://code.tutsplus.com/tutorials/the-wordpress-settings-api-part-5-tabbed-navigation-for-settings--wp-24971
 
 
-	class OptionsPageManager extends Plugin {
+	class OptionsCore extends Plugin {
 
 		protected $pluginPage;
 
@@ -42,6 +43,18 @@
 					]
 			];
 
+
+			$this->tables_settings = [
+				'tablesAlowed' => [
+					'label'		=> __('Tables allowed', 'ctcrud'),
+					'name'		=> 'tablesAllowed',
+					'fieldtype'	=> 'multiselect',
+					'datatype'	=> 'array',
+					'values'		=> DBHelper::getTablesAllowed(),
+					'default'	=> [],
+				],
+			];
+
 			add_action('admin_menu', [$this, 'RegisterOptionsPage']);
 			add_action('admin_init', [$this, 'SettingsInit']);
 		}
@@ -56,12 +69,11 @@
 				[
 					'type'					=> 'integer',
 					'description'			=> 'Table rows per page',
-					'sanitize_callback'	=> [$this, 'sanitizeBasicSettings'],		// sanitize_integer_field_callback
+					'sanitize_callback'	=> [$this, 'sanitizeBasicSettings'],
 					'show_in_rest'			=> false,
 					'default'				=> 20,
 				]
 			);
-
 
 			foreach ($this->basic_settings as $basic_setting)
 			{
@@ -82,18 +94,45 @@
 					]
 				);
 			}
-		}
 
+
+			register_setting(
+				$this->pluginPage,			// option_group	- must match settings_field($options_group)
+				'ctcrud_tables_settings',	// option_name		- stored in DB
+				[
+					'type'					=> 'integer',
+					'description'			=> 'Tables settings',
+					'sanitize_callback'	=> [$this, 'sanitizeTablesSettings'],
+					'show_in_rest'			=> false,
+					'default'				=> 20,
+				]
+			);
+
+			foreach ($this->tables_settings as $tables_setting)
+			{
+				add_settings_field(
+					$tables_setting['name'],
+					$tables_setting['label'], //__('Basic settings', 'ctcrud'),
+					[$this, 'ctcrud_tables_settings_render'],
+					$this->pluginPage,									// must match do_settings_sections($page) & add_settings_section($page)
+					'ctcrud_tables_settings_section',				// must match add_settings_section($id)
+					[															// passed to callback function
+						'label_for'	=> $tables_setting['name'],
+						'id'			=> $tables_setting['name'],
+						'type'		=> $tables_setting['fieldtype'],
+						'values'		=> $tables_setting['values'] ?? null,
+						'name'		=> $tables_setting['name'],
+						'class'		=> $this->prefix('__fieldWrapper--') . $tables_setting['name'],
+						'default'	=> $tables_setting['default'],
+					]
+				);
+			}
+		}
 
 
 		public function ctcrud_basic_settings_render($opts)
 		{
 			$values = get_option('ctcrud_basic_settings');
-
-			// echo '<pre>';
-			// print_r($opts);
-			// echo '</pre>';
-			// die('');
 
 			/* opts
 				[label_for] => per_page
@@ -137,7 +176,23 @@
 				default:
 					die('no such field type');
 			}
+		}
 
+
+		public function ctcrud_tables_settings_render($opts)
+		{
+			$values = get_option('ctcrud_tables_settings');
+
+			echo '<pre>';
+			print_r($opts);
+			echo '</pre>';
+			die('');
+
+			switch ($opts['type'])
+			{
+				default:
+					echo 'doing ctcrud_tables_settings fields';
+			}
 		}
 
 
@@ -157,8 +212,10 @@
 		public function RenderOptionsPage()
 		{
 			$active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'ctcrud_basic_settings_section';
+
 			?>
 			<h2><?= $this->getConfig('shortName') ?></h2>
+
 			<h2 class="nav-tab-wrapper">
 				<a href="?page=ctcrud-settings&tab=ctcrud_basic_settings_section"
 					class="nav-tab <?php echo $active_tab == 'ctcrud_basic_settings_section' ? 'nav-tab-active' : ''; ?>">Basic Options</a>
@@ -168,17 +225,27 @@
 
 			<form action='options.php' method='post'>
 				<?php /* settings_errors(); */ ?>
+				<?php
+					settings_fields($this->pluginPage);
+					switch ($active_tab) {
+						case 'ctcrud_basic_settings_section':
+							echo '<table>';
+							do_settings_fields($this->pluginPage, $active_tab);
+							echo '</table>';
 
-				<?php if ($active_tab == 'ctcrud_basic_settings_section'): ?>
-					<?php settings_fields($this->pluginPage) ?>
-					<table>
-						<?php do_settings_fields($this->pluginPage, 'ctcrud_basic_settings_section') ?>
-					</table>
-				<?php elseif ($active_tab == 'ctcrud_tables_settings_section'): ?>
-					<table>table options here</table>
-				<?php else: ?>
-					<table>other options here</table>
-				<?php endif ?>
+							break;
+
+						case 'ctcrud_tables_settings_section':
+							echo '<table>';
+							do_settings_fields($this->pluginPage, $active_tab);
+							echo '</table>';
+
+							break;
+
+						default:
+							echo '<table>other options here</table>';
+					}
+				?>
 
 				<?php
 					// echo '========== outputs all sections =========';
@@ -192,7 +259,6 @@
 			</form>
 			<?php
 		}
-
 
 		public function sanitizeBasicSettings($els)
 		{
@@ -227,12 +293,14 @@
 				}
 			}
 
-			// echo '<pre>';
-			// print_r($els);
-			// print_r($out_els);
-			// echo '</pre>';
-			// die('');
+			return $out_els;
+		}
 
+
+		public function sanitizeTablesSettings($els)
+		{
+			$out_els = [];
+			$out_els = $els;
 			return $out_els;
 		}
 	}

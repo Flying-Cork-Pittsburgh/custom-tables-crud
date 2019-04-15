@@ -11,6 +11,7 @@
 		public function connect();
 		public function query(...$args);
 		public function fetchAllQuery(Query $query);
+		public function getPossibleTables();
 		// public function fetchAll($table, ...$args);
 		public function countAll($table);
 		public function updateField($table, $field, $id, $value);

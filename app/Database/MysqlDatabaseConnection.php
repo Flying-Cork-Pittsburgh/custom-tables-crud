@@ -88,6 +88,47 @@
 			return $result;
 		}
 
+		public function getPossibleTables()
+		{
+			global $wpdb;
+
+			$prefix = $wpdb->prefix;
+			$wp_tables = [
+				$prefix . 'commentmeta',
+				$prefix . 'comments',
+				$prefix . 'links',
+				$prefix . 'options',
+				$prefix . 'postmeta',
+				$prefix . 'posts',
+				$prefix . 'term_relationships',
+				$prefix . 'term_taxonomy',
+				$prefix . 'termmeta',
+				$prefix . 'terms',
+				$prefix . 'usermeta',
+				$prefix . 'users'
+			];
+			$tables_allowed = [];
+
+
+			try {
+				$SQL = "SHOW TABLES WHERE Tables_in_" . DB_NAME . " NOT IN ('" . implode("', '", $wp_tables)  . "')";
+
+				$stmt = $this->dbh->prepare($SQL);
+				$stmt->execute();
+				$result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+			} catch (PDOException $e) {
+				echo 'Action failed: ' . $e->getMessage();
+			}
+
+			foreach ((array)$result as $table)
+			{
+				if (!empty($table['Tables_in_' . DB_NAME]))
+					$tables_allowed[] = $table['Tables_in_' . DB_NAME];
+			}
+
+
+			return $tables_allowed;
+		}
 
 		// public function fetchAll($table, $where = '', $limit = null, $offset = null, $order = null, $groupby = null, $cols = [],
 		// 			...$args)

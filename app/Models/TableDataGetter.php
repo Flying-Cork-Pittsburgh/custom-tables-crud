@@ -23,6 +23,15 @@
 		}
 
 
+		public static function getPossibleTables()
+		{
+			$connection = Plugin::getConfig('connection');
+			$results = $connection->getPossibleTables();
+
+			return $results;
+		}
+
+
 		// public static function getElems($table, $where = '', $limit = null, $offset = null,
 		// 	$order = null, $groupby = null, $cols = null)
 		// {
