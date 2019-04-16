@@ -109,7 +109,6 @@
 			];
 			$tables_allowed = [];
 
-
 			try {
 				$SQL = "SHOW TABLES WHERE Tables_in_" . DB_NAME . " NOT IN ('" . implode("', '", $wp_tables)  . "')";
 
@@ -125,7 +124,6 @@
 				if (!empty($table['Tables_in_' . DB_NAME]))
 					$tables_allowed[] = $table['Tables_in_' . DB_NAME];
 			}
-
 
 			return $tables_allowed;
 		}

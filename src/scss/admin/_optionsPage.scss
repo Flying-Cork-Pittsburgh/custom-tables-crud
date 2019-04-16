@@ -1,0 +1,11 @@
+.optionsPage {
+	&__tabContent {
+		max-height: 0;
+		visibility: hidden;
+
+		&--visible {
+			max-height: initial;
+			visibility: visible;
+		}
+	}
+}

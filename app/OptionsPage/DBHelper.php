@@ -25,7 +25,6 @@
 
 			$possibleTables = TableDataGetter::getPossibleTables();
 
-
 			return $possibleTables;
 		}
 	}

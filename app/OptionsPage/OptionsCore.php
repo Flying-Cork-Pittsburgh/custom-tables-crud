@@ -12,7 +12,6 @@
 
 		protected $pluginPage;
 
-
 		public function __construct()
 		{
 			$this->pluginPage = $this->getConfig('prefix') . '-settings';
@@ -132,7 +131,7 @@
 
 		public function ctcrud_basic_settings_render($opts)
 		{
-			$values = get_option('ctcrud_basic_settings');
+			$options = get_option('ctcrud_basic_settings');
 
 			/* opts
 				[label_for] => per_page
@@ -157,42 +156,64 @@
 					<input type='<?= $opts['type'] ?>'
 						id="<?= esc_attr($opts['name']) ?>"
 						name='ctcrud_basic_settings[<?= esc_attr($opts['name']) ?>]'
-						value='<?= esc_attr($values[$opts['name']] ?? $opts['default']) ?>'>
+						value='<?= esc_attr($options[$opts['name']] ?? $opts['default']) ?>'>
 					<?php
 					break;
 
 				case 'checkbox':
 					?>
-					<input type='hidden'
-						name='ctcrud_basic_settings[<?= esc_attr($opts['name']) ?>]'
+					<input type="hidden"
+						name="ctcrud_basic_settings[<?= esc_attr($opts['name']) ?>]"
 						value='0'>
 					<input type='<?= $opts['type'] ?>'
 						id="<?= esc_attr($opts['name']) ?>"
-						name='ctcrud_basic_settings[<?= esc_attr($opts['name']) ?>]'
-						value='1' <?php checked($values[$opts['name']] ?? $opts['default'], 1) ?>>
+						name="ctcrud_basic_settings[<?= esc_attr($opts['name']) ?>]"
+						value='1' <?php checked($options[$opts['name']] ?? $opts['default'], 1) ?>>
 					<?php
 					break;
 
 				default:
-					die('no such field type');
+					die('unsupported field type 1');
 			}
 		}
 
 
 		public function ctcrud_tables_settings_render($opts)
 		{
-			$values = get_option('ctcrud_tables_settings');
+			$options = get_option('ctcrud_tables_settings');
 
-			echo '<pre>';
-			print_r($opts);
-			echo '</pre>';
-			die('');
+			/* opts
+				[label_for] => tablesAllowed
+				[id] => tablesAllowed
+				[type] => multiselect
+				[values] => [
+						[0] => postal_codes
+						[1] => wholesaler_prods
+						[2] => wp_b8d_wpf_stats
+					]
+				[name] => tablesAllowed
+				[class] => ctcrud___fieldWrapper--tablesAllowed
+				[default] =>
+			*/
 
 			switch ($opts['type'])
 			{
+				case 'multiselect':
+					?>
+					<select
+						id="<?= esc_attr($opts['name']) ?>"
+						name="ctcrud_tables_settings[<?= esc_attr($opts['name']) ?>]" multiple>
+						<?php foreach ($opts['values'] as $value): ?>
+							<option value="<?= $value ?>" <?php selected($options[esc_attr($opts['name'])], $value ); ?>><?= $value ?></option>
+						<?php endforeach ?>
+					</select>
+					<?php
+					break;
+
 				default:
-					echo 'doing ctcrud_tables_settings fields';
+					die('unsupported field type 1');
 			}
+
 		}
 
 
@@ -227,24 +248,26 @@
 				<?php /* settings_errors(); */ ?>
 				<?php
 					settings_fields($this->pluginPage);
-					switch ($active_tab) {
-						case 'ctcrud_basic_settings_section':
-							echo '<table>';
-							do_settings_fields($this->pluginPage, $active_tab);
-							echo '</table>';
+					// switch ($active_tab) {
+					// 	case 'ctcrud_basic_settings_section':
+							echo '<div class="optionsPage__tabContent ' .
+								($active_tab == 'ctcrud_basic_settings_section' ? 'optionsPage__tabContent--visible' : '') . '"><table>';
+							do_settings_fields($this->pluginPage, 'ctcrud_basic_settings_section');
+							echo '</table></div>';
 
-							break;
+						// 	break;
 
-						case 'ctcrud_tables_settings_section':
-							echo '<table>';
-							do_settings_fields($this->pluginPage, $active_tab);
-							echo '</table>';
+						// case 'ctcrud_tables_settings_section':
+							echo '<div class="optionsPage__tabContent ' .
+								($active_tab == 'ctcrud_tables_settings_section' ? 'optionsPage__tabContent--visible' : '') . '"><table>';
+							do_settings_fields($this->pluginPage, 'ctcrud_tables_settings_section');
+							echo '</table></div>';
 
-							break;
+						// 	break;
 
-						default:
-							echo '<table>other options here</table>';
-					}
+						// default:
+						// 	echo '<table>other options here</table>';
+					//}
 				?>
 
 				<?php
