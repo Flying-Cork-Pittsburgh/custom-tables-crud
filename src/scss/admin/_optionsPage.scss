@@ -6,6 +6,33 @@
 		&--visible {
 			max-height: initial;
 			visibility: visible;
+
+			table {
+				margin: 20px 0 0 10px;
+			}
+		}
+
+		th {
+			vertical-align: top;
+		}
+
+		label {
+			display: block;
+			min-width: 140px;
+			line-height: 30px;
+			text-align: left;
+		}
+	}
+
+	&__helpText {
+		font-size: 14px;
+
+		span {
+			display: inline-block;
+			padding: 0 2px;
+			background-color: #dedede;
+			font-family: 'Courier New', Courier, monospace;
+			font-size: 12px;
 		}
 	}
 }

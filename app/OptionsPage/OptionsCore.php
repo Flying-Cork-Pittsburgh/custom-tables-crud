@@ -5,7 +5,9 @@
 	use PiotrKu\CustomTablesCrud\Plugin;
 	use PiotrKu\CustomTablesCrud\OptionsPage\DBHelper;
 
-	// https://code.tutsplus.com/tutorials/the-wordpress-settings-api-part-5-tabbed-navigation-for-settings--wp-24971
+	// https://code.tutsplus.com/tutorials/the-wordpress-settings-api-part-5-tabbed-navigation-for-settings--wp-24971	- tutorial
+	// http://cdn.kjodle.net/techblog/pdf/Settings_API_cheatsheet.pdf																	- cheat sheet
+	// http://wpsettingsapi.jeroensormani.com/																								- options generator
 
 
 	class OptionsCore extends Plugin {
@@ -15,6 +17,12 @@
 		public function __construct()
 		{
 			$this->pluginPage = $this->getConfig('prefix') . '-settings';
+
+			/*
+
+{"wholesaler_prods":{"tableName":"wholesaler_prods","pageTitle":"Edycja produkt\u00f3w hurtowni","menuTitle":"Produkty hurtow+","capability":"manage_product_import","where_filter":" wholesaler_id IS NOT NULL && wholesaler_id > 0 ","filters":{"wholesaler_id":{"title":"- kt\u00f3ra hurtownia -","filter_type":"wp_select","post_type":"wholesales","select_value":"ID","select_name":"post_title","where_filter":" wholesaler_id = {value} "},"product_producer_id":{"title":"- kt\u00f3ry producent -","filter_type":"wp_select","post_type":"producers","select_value":"ID","select_name":"post_title","where_filter":" product_producer_id = {value} "},"wholesaler_offered":{"title":"- czy w ofercie -","filter_type":"table_vals","post_type":null,"select_value":null,"select_name":null,"where_filter":" wholesaler_offered = {value} "},"wholesaler_on_demand":{"title":"- czy na zam\u00f3wienie -","filter_type":"table_vals","post_type":null,"select_value":null,"select_name":null,"where_filter":" wholesaler_on_demand = {value} "}},"fields":{"id":{"title":"Id","type":"bigint(20) unsigned","cast":"int","editable":false,"orderable":true,"searchable":false,"default":null,"null":false,"showas":null},"wholesaler_id":{"title":"Hurtownia","type":"int(10)","cast":"int","editable":false,"orderable":false,"searchable":false,"default":null,"null":false,"showas":{"posttype":"wholesales","joinon":"ID","display":"post_title","link":false}},"wholesaler_product_title":{"title":"Nazwa produktu","type":"varchar(255)","cast":"string","editable":false,"orderable":true,"searchable":true,"default":null,"null":true,"showas":null},"wholesaler_price":{"title":"Cena (hurt)","type":"float","cast":"float","editable":true,"orderable":true,"searchable":true,"default":null,"null":true,"showas":null},"wholesaler_price_promo":{"title":"Cena (hurt) bez promo.","type":"float","cast":"float","editable":true,"orderable":true,"searchable":true,"default":null,"null":true,"showas":null},"wholesaler_offered":{"title":"W ofercie","type":"tinyint(3) unsigned","cast":"boolean_int","editable":true,"orderable":true,"searchable":false,"default":0,"null":false,"showas":null},"wholesaler_on_demand":{"title":"Na zam\u00f3wienia","type":"tinyint(3) unsigned","cast":"boolean_int","editable":true,"orderable":true,"searchable":false,"default":0,"null":false,"showas":null},"product_id":{"title":"Id produktu","type":"int(10) unsigned","cast":"int","editable":false,"orderable":false,"searchable":false,"default":null,"null":false,"showas":{"posttype":"products","joinon":"ID","display":"ID","link":true}},"product_producer_id":{"title":"Producent","type":"int(10) unsigned","cast":"int","editable":false,"orderable":false,"searchable":false,"default":null,"null":false,"showas":{"posttype":"producers","joinon":"ID","display":"post_title","link":true}}}},"postal_codes":{"tableName":"postal_codes","pageTitle":"Edycja kod\u00f3w pocztowych","menuTitle":"Kody pocztowe","capability":"manage_product_import","where_filter":"","filters":[],"fields":{"id":{"title":"Id","type":"int(10) unsigned","cast":"int","editable":false,"orderable":false,"searchable":false,"default":null,"null":false,"showas":null},"postal":{"title":"Kod pocztowy","type":"char(6)","cast":"string","editable":true,"orderable":false,"searchable":false,"default":null,"null":true,"showas":null},"address":{"title":"Adres","type":"varchar(120)","cast":"string","editable":true,"orderable":false,"searchable":false,"default":null,"null":true,"showas":null}}}}
+
+			*/
 
 			$this->basic_settings = [
 					'perPage' => [
@@ -52,6 +60,25 @@
 					'values'		=> DBHelper::getTablesAllowed(),
 					'default'	=> [],
 				],
+				'tablesConfig' => [
+					'label'		=> __('Tables config', 'ctcrud'),
+					'name'		=> 'tablesConfig',
+					'fieldtype'	=> 'textarea',
+					'datatype'	=> 'text',
+					'values'		=> '',
+					'default'	=> '',
+				],
+			];
+
+			$this->tables_helps = [
+				'tablesHelp' => [
+					'label'		=> __('Tables help', 'ctcrud'),
+					'name'		=> 'tablesHelp',
+					'fieldtype'	=> 'info',
+					'datatype'	=> 'info',
+					'values'		=> self::getDefaultTablesConfig(),
+					'default'	=> '',
+				],
 			];
 
 			add_action('admin_menu', [$this, 'RegisterOptionsPage']);
@@ -88,7 +115,7 @@
 						'type'		=> $basic_setting['fieldtype'],
 						'values'		=> $basic_setting['values'] ?? null,
 						'name'		=> $basic_setting['name'],
-						'class'		=> $this->prefix('__fieldWrapper--') . $basic_setting['name'],
+						'class'		=> $this->prefix('_fieldWrapper--') . $basic_setting['name'],
 						'default'	=> $basic_setting['default'],
 					]
 				);
@@ -121,8 +148,41 @@
 						'type'		=> $tables_setting['fieldtype'],
 						'values'		=> $tables_setting['values'] ?? null,
 						'name'		=> $tables_setting['name'],
-						'class'		=> $this->prefix('__fieldWrapper--') . $tables_setting['name'],
+						'class'		=> $this->prefix('_fieldWrapper--') . $tables_setting['name'],
 						'default'	=> $tables_setting['default'],
+					]
+				);
+			}
+
+
+			register_setting(
+				$this->pluginPage,			// option_group	- must match settings_field($options_group)
+				'ctcrud_tables_help',		// option_name		- stored in DB
+				[
+					'type'					=> 'integer',
+					'description'			=> 'Tables config help',
+					'sanitize_callback'	=> [$this, 'sanitizeTablesHelp'],
+					'show_in_rest'			=> false,
+					'default'				=> null,
+				]
+			);
+
+			foreach ($this->tables_helps as $tables_help)
+			{
+				add_settings_field(
+					$tables_help['name'],
+					$tables_help['label'], //__('Basic settings', 'ctcrud'),
+					[$this, 'ctcrud_tables_helps_render'],
+					$this->pluginPage,									// must match do_settings_sections($page) & add_settings_section($page)
+					'ctcrud_tables_helps_section',						// must match add_settings_section($id)
+					[															// passed to callback function
+						'label_for'	=> $tables_help['name'],
+						'id'			=> $tables_help['name'],
+						'type'		=> $tables_help['fieldtype'],
+						'values'		=> $tables_help['values'] ?? null,
+						'name'		=> $tables_help['name'],
+						'class'		=> $this->prefix('_fieldWrapper--') . $tables_help['name'],
+						'default'	=> $tables_help['default'],
 					]
 				);
 			}
@@ -180,7 +240,8 @@
 
 		public function ctcrud_tables_settings_render($opts)
 		{
-			$options = get_option('ctcrud_tables_settings');
+			$options_set = 'ctcrud_tables_settings';
+			$options = get_option($options_set);
 
 			/* opts
 				[label_for] => tablesAllowed
@@ -202,7 +263,7 @@
 					?>
 					<select
 						id="<?= esc_attr($opts['name']) ?>"
-						name="ctcrud_tables_settings[<?= esc_attr($opts['name']) ?>]" multiple>
+						name="<?= $options_set ?>[<?= esc_attr($opts['name']) ?>]" multiple>
 						<?php foreach ($opts['values'] as $value): ?>
 							<option value="<?= $value ?>" <?php selected($options[esc_attr($opts['name'])], $value ); ?>><?= $value ?></option>
 						<?php endforeach ?>
@@ -210,11 +271,45 @@
 					<?php
 					break;
 
+				case 'textarea':
+					?>
+					<textarea
+						id="<?= esc_attr($opts['name']) ?>"
+						name="<?= $options_set ?>[<?= esc_attr($opts['name']) ?>]"><?= esc_attr($options[$opts['name']] ?? $opts['default']) ?></textarea>
+					<?php
+					break;
+
 				default:
 					die('unsupported field type 1');
 			}
-
 		}
+
+
+		public function ctcrud_tables_helps_render($opts)
+		{
+			$options_set = 'ctcrud_tables_helps_render';
+			$options = get_option($options_set);
+
+			echo "<p class=\"optionsPage__helpText\">This is an examplary configuration for two tables <span>wholesaler_prods</span> and <span>postal_codes</span>.</p>";
+			echo "<p class=\"optionsPage__helpText\">Presence of each field from the list is obligatory, the fields are:<br>
+				- <span>tableName</span><br>
+				- <span>pageTitle</span><br>
+				- <span>menuTitle</span><br>
+				- <span>capability</span><br>
+				- <span>where_filter</span><br>
+				- <span>filters</span><br>
+				- <span>fields</span><br>
+			.</p>";
+			echo "<p class=\"optionsPage__helpText\">Configuration should be in a form of JSON encoded array in following exemplary form:</p>";
+
+
+			echo '<pre>';
+			print_r($opts['values']);
+			echo '</pre>';
+			die('');
+		}
+
+
 
 
 		public function RegisterOptionsPage()
@@ -242,32 +337,31 @@
 					class="nav-tab <?php echo $active_tab == 'ctcrud_basic_settings_section' ? 'nav-tab-active' : ''; ?>">Basic Options</a>
 				<a href="?page=ctcrud-settings&tab=ctcrud_tables_settings_section"
 					class="nav-tab <?php echo $active_tab == 'ctcrud_tables_settings_section' ? 'nav-tab-active' : ''; ?>">Table Configuration</a>
+				<a href="?page=ctcrud-settings&tab=ctcrud_tables_helps_section"
+					class="nav-tab <?php echo $active_tab == 'ctcrud_tables_helps_section' ? 'nav-tab-active' : ''; ?>">Configuration Help</a>
 			</h2>
 
 			<form action='options.php' method='post'>
 				<?php /* settings_errors(); */ ?>
 				<?php
+
 					settings_fields($this->pluginPage);
-					// switch ($active_tab) {
-					// 	case 'ctcrud_basic_settings_section':
-							echo '<div class="optionsPage__tabContent ' .
-								($active_tab == 'ctcrud_basic_settings_section' ? 'optionsPage__tabContent--visible' : '') . '"><table>';
-							do_settings_fields($this->pluginPage, 'ctcrud_basic_settings_section');
-							echo '</table></div>';
 
-						// 	break;
+					echo '<div class="optionsPage__tabContent ' .
+						($active_tab == 'ctcrud_basic_settings_section' ? 'optionsPage__tabContent--visible' : '') . '"><table>';
+					do_settings_fields($this->pluginPage, 'ctcrud_basic_settings_section');
+					echo '</table></div>';
 
-						// case 'ctcrud_tables_settings_section':
-							echo '<div class="optionsPage__tabContent ' .
-								($active_tab == 'ctcrud_tables_settings_section' ? 'optionsPage__tabContent--visible' : '') . '"><table>';
-							do_settings_fields($this->pluginPage, 'ctcrud_tables_settings_section');
-							echo '</table></div>';
+					echo '<div class="optionsPage__tabContent ' .
+						($active_tab == 'ctcrud_tables_settings_section' ? 'optionsPage__tabContent--visible' : '') . '"><table>';
+					do_settings_fields($this->pluginPage, 'ctcrud_tables_settings_section');
+					echo '</table></div>';
 
-						// 	break;
+					echo '<div class="optionsPage__tabContent ' .
+						($active_tab == 'ctcrud_tables_helps_section' ? 'optionsPage__tabContent--visible' : '') . '"><table>';
+					do_settings_fields($this->pluginPage, 'ctcrud_tables_helps_section');
+					echo '</table></div>';
 
-						// default:
-						// 	echo '<table>other options here</table>';
-					//}
 				?>
 
 				<?php
@@ -282,6 +376,7 @@
 			</form>
 			<?php
 		}
+
 
 		public function sanitizeBasicSettings($els)
 		{
@@ -321,6 +416,14 @@
 
 
 		public function sanitizeTablesSettings($els)
+		{
+			$out_els = [];
+			$out_els = $els;
+			return $out_els;
+		}
+
+
+		public function sanitizeTablesHelp($els)
 		{
 			$out_els = [];
 			$out_els = $els;
